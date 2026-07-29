@@ -1,0 +1,360 @@
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { access, readFile, readdir } from "node:fs/promises";
+import test from "node:test";
+
+const root = new URL("../", import.meta.url);
+const publicRoot = new URL("public/", root);
+
+const [html, notFoundHtml, css, packageText, workflow, readme] =
+  await Promise.all([
+    readFile(new URL("index.html", publicRoot), "utf8"),
+    readFile(new URL("404.html", publicRoot), "utf8"),
+    readFile(new URL("styles.css", publicRoot), "utf8"),
+    readFile(new URL("package.json", root), "utf8"),
+    readFile(new URL(".github/workflows/deploy-pages.yml", root), "utf8"),
+    readFile(new URL("README.md", root), "utf8"),
+  ]);
+
+const packageJson = JSON.parse(packageText);
+
+function countMatches(value, pattern) {
+  return [...value.matchAll(pattern)].length;
+}
+
+test("publishes a complete zero-JavaScript landing page", async () => {
+  assert.match(html, /^<!DOCTYPE html>/i);
+  assert.match(html, /<html lang="en-AU">/i);
+  assert.match(html, /<title>Lumen — Meaningful filenames for Mac<\/title>/i);
+  assert.match(html, /<link rel="stylesheet" href="\/styles\.css">/i);
+  assert.doesNotMatch(html, /<script\b/i);
+  assert.doesNotMatch(html, /\/_next\//i);
+  assert.doesNotMatch(html, /__next_f|javascript:/i);
+  assert.doesNotMatch(html, /\son[a-z]+=/i);
+  assert.doesNotMatch(css, /@import|--theme\(/i);
+
+  const publishedFiles = await readdir(publicRoot, { recursive: true });
+  assert.equal(
+    publishedFiles.filter((file) => /\.(?:c|m)?js$/i.test(file)).length,
+    0,
+  );
+});
+
+test("ships canonical and social-preview metadata for lumen-ai.eu", () => {
+  assert.match(
+    html,
+    /<link rel="canonical" href="https:\/\/lumen-ai\.eu\/"\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta property="og:url" content="https:\/\/lumen-ai\.eu\/"\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta property="og:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta property="og:image:width" content="1200"\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta property="og:image:height" content="630"\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta name="twitter:card" content="summary_large_image"\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta name="twitter:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i,
+  );
+});
+
+test("preserves the approved Lumen 1.1 product and model facts", () => {
+  assert.match(html, /Turn messy files into meaningful names\./);
+  assert.match(html, /Download Lumen 1\.1/);
+  assert.match(html, /Download the 20 MB DMG/);
+  assert.match(html, /macOS 26\.4 or later/);
+  assert.match(html, /Apple silicon with 24 GB\+ memory/);
+  assert.match(html, /One local model\. Four optional cloud models\./);
+  assert.match(html, /Phi-4 14B/);
+  assert.match(html, /mlx-community\/phi-4-4bit/);
+  assert.match(html, /claude-sonnet-5/);
+  assert.match(html, /gpt-5\.6-luna/);
+  assert.match(html, /gemini-3\.5-flash/);
+  assert.match(html, /grok-4\.3/);
+  assert.match(html, /Native PDF\/image fallback for weak text results/);
+  assert.match(
+    html,
+    /No original document file; oversized PDFs go to Unprocessed\./,
+  );
+  assert.match(
+    html,
+    /A document’s filename and locally extracted text are normally sent\./,
+  );
+  assert.match(html, /optional cloud photo descriptions/);
+  assert.match(html, /not through the Mac App Store/);
+  assert.doesNotMatch(html, /Lumen 1\.2/);
+});
+
+test("preserves the labelled product sections and shipped changelog", () => {
+  assert.match(html, /href="#models"/);
+  assert.match(html, /id="models"[^>]+aria-labelledby="models-title"/);
+  assert.match(
+    html,
+    /href="https:\/\/kudige79\.github\.io\/lumen-privacy\/"/,
+  );
+  assert.match(html, /Local-first by design\. Cloud only by choice\./);
+  assert.match(
+    html,
+    /images containing little or no readable text are sent in full/,
+  );
+  assert.match(html, /No Lumen account/);
+  assert.match(html, /PDF · DOCX · XLSX · PPTX · TXT/);
+
+  assert.match(html, /href="#changelog"/);
+  assert.match(
+    html,
+    /id="changelog"[^>]+aria-labelledby="changelog-title"/i,
+  );
+  assert.match(
+    html,
+    /article[^>]+aria-labelledby="release-1-1-title"/i,
+  );
+  assert.match(
+    html,
+    /article[^>]+aria-labelledby="release-1-0-title"/i,
+  );
+  assert.match(html, /datetime="2026-07-16"/i);
+  assert.match(html, /datetime="2026-06"/i);
+  assert.match(html, /Strengthened rename and reversion handling/);
+  assert.match(html, /Current release/);
+
+  const version11Index = html.indexOf('id="release-1-1-title"');
+  const version10Index = html.indexOf('id="release-1-0-title"');
+  assert.ok(version11Index >= 0 && version10Index >= 0);
+  assert.ok(version11Index < version10Index);
+});
+
+test("includes every agreed audit correction", () => {
+  assert.match(
+    html,
+    /asks for permission before it first sends file-related content to that provider\./,
+  );
+  assert.doesNotMatch(html, /shows what will be sent and asks first/i);
+  assert.doesNotMatch(html, /asks before the first transmission/i);
+
+  assert.match(
+    html,
+    /The Lumen app has no developer-operated servers or account system, and includes no analytics, advertising or tracking\./,
+  );
+  assert.match(
+    html,
+    /This website is hosted by GitHub Pages, which may collect visitor information such as IP addresses/,
+  );
+  assert.match(
+    html,
+    /href="https:\/\/docs\.github\.com\/en\/site-policy\/privacy-policies\/github-general-privacy-statement"/,
+  );
+  assert.match(html, /Lumen adds no cookies or analytics of its own\./);
+
+  assert.match(
+    html,
+    /A document’s filename and locally extracted text are normally sent\./,
+  );
+  assert.match(
+    html,
+    /Gemini and xAI do not receive original document files; oversized PDFs go to Unprocessed\./,
+  );
+  assert.doesNotMatch(html, /Extracted text only/);
+  assert.match(
+    html,
+    /Intel Macs require a configured cloud provider for AI analysis/,
+  );
+  assert.doesNotMatch(
+    html,
+    /Intel Macs use an optional cloud provider for AI analysis/,
+  );
+  assert.match(
+    html,
+    /Seaside Walk - Bondi, AU - 2026-02-08\.HEIC/,
+  );
+  assert.doesNotMatch(
+    html,
+    /Seaside Walk - Bondi, AU - 2026-02-08\.heic/,
+  );
+  assert.equal(countMatches(html, /Apple’s geocoding service/g), 3);
+  assert.doesNotMatch(html, /Apple Maps/);
+  assert.match(
+    html,
+    /Pages · Numbers · Keynote · via embedded preview/,
+  );
+  assert.match(html, /Install in four steps/);
+  assert.match(
+    html,
+    /If macOS asks about an app downloaded from the internet, click Open\./,
+  );
+  assert.match(
+    html,
+    /Files over 500 MB are not processed and are listed in Unprocessed with a reason\./,
+  );
+  assert.match(
+    html,
+    /<span class="feature-mark" aria-hidden="true">RV<\/span>/,
+  );
+  assert.match(html, /<span><i><\/i>Revert Renames<\/span>/);
+  assert.match(html, /<span><i><\/i>Name Mappings<\/span>/);
+  assert.match(
+    html,
+    /class="rename-example" role="group" aria-label="Filename before and after example"/,
+  );
+  assert.match(
+    html,
+    /class="support-options" role="group" aria-label="Choose a contribution amount"/,
+  );
+  assert.match(css, /\.release-title\s*\{[^}]*color: #303844;/s);
+  assert.match(css, /\.trust-list\s*\{[^}]*gap: 6px;/s);
+  assert.match(css, /\.trust-list li\s*\{[^}]*padding: 7px 8px;/s);
+  assert.match(css, /html\s*\{[^}]*-webkit-text-size-adjust: 100%;/s);
+  assert.match(css, /\.checksum summary::after\s*\{/);
+  assert.match(css, /\.checksum\[open\] summary::after\s*\{/);
+});
+
+test("includes the optional Wise support section", () => {
+  assert.match(
+    html,
+    /id="support" aria-labelledby="support-title"/,
+  );
+  assert.match(
+    html,
+    /Enjoying Lumen\? Buy the developer a coffee\./,
+  );
+  assert.match(html, /Lumen is freeware\./);
+
+  const links = [
+    ["fFLQLXd8oYCayZY", "1 euro", "€1"],
+    ["Fjx05YUR26df10o", "2 euros", "€2"],
+    ["f_gg0hWz2u01rVg", "5 euros", "€5"],
+  ];
+
+  for (const [token, label, amount] of links) {
+    const pattern = new RegExp(
+      `<a class="button support-button" href="https://wise\\.com/pay/r/${token}" target="_blank" rel="noopener noreferrer" aria-label="Contribute ${label} through Wise">${amount}</a>`,
+    );
+    assert.match(html, pattern);
+  }
+
+  assert.match(html, /<a href="#support">Support<\/a>/);
+  assert.match(html, /Payments open on Wise\./);
+  assert.match(css, /\.support-card\s*\{/);
+});
+
+test("keeps native page behaviour and internal references intact", async () => {
+  const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+  assert.equal(new Set(ids).size, ids.length, "HTML IDs must be unique");
+  const idSet = new Set(ids);
+
+  for (const match of html.matchAll(/\bhref="#([^"]+)"/g)) {
+    assert.ok(idSet.has(match[1]), `Missing fragment target #${match[1]}`);
+  }
+
+  for (const match of html.matchAll(/\baria-labelledby="([^"]+)"/g)) {
+    for (const id of match[1].split(/\s+/)) {
+      assert.ok(idSet.has(id), `Missing aria-labelledby target #${id}`);
+    }
+  }
+  assert.doesNotMatch(
+    html,
+    /<div\b(?=[^>]*\baria-label=)(?![^>]*\brole=)[^>]*>/i,
+  );
+
+  const disclosures = [...html.matchAll(/<details\b[\s\S]*?<\/details>/g)];
+  assert.equal(disclosures.length, 6);
+  for (const disclosure of disclosures) {
+    assert.match(disclosure[0], /<summary>[\s\S]*?<\/summary>/);
+  }
+
+  const localAssets = new Set(
+    [...html.matchAll(/\b(?:href|src)="\/([^"#?]+)"/g)].map(
+      (match) => match[1],
+    ),
+  );
+  await Promise.all(
+    [...localAssets].map((path) => access(new URL(path, publicRoot))),
+  );
+
+  assert.match(html, /Skip to main content/);
+  assert.doesNotMatch(
+    html,
+    /codex-preview|Your site is taking shape|Codex is working/,
+  );
+});
+
+test("ships the approved release artefact and local images", async () => {
+  const [dmg, socialCard] = await Promise.all([
+    readFile(new URL("Lumen-1.1.dmg", publicRoot)),
+    readFile(new URL("og.png", publicRoot)),
+  ]);
+
+  assert.equal(dmg.byteLength, 19_913_800);
+  const approvedChecksum =
+    "6aa7156364b1a6d99965e744b81e68ef6ca347788ee459bd51e23d6498aecb43";
+  assert.equal(createHash("sha256").update(dmg).digest("hex"), approvedChecksum);
+  assert.match(html, new RegExp(approvedChecksum));
+
+  const downloadLinks = [
+    ...html.matchAll(
+      /<a\b[^>]*href="\/Lumen-1\.1\.dmg"[^>]*\bdownload(?:>|="")/g,
+    ),
+  ];
+  assert.equal(downloadLinks.length, 4);
+
+  assert.equal(socialCard.subarray(1, 4).toString("ascii"), "PNG");
+  assert.equal(socialCard.readUInt32BE(16), 1200);
+  assert.equal(socialCard.readUInt32BE(20), 630);
+
+  await Promise.all([
+    access(new URL("lumen-icon.png", publicRoot)),
+    access(new URL("favicon.png", publicRoot)),
+  ]);
+});
+
+test("provides a branded static 404 page", () => {
+  assert.match(notFoundHtml, /^<!DOCTYPE html>/i);
+  assert.match(notFoundHtml, /<title>Page not found — Lumen<\/title>/i);
+  assert.match(notFoundHtml, /That page is not here\./);
+  assert.match(notFoundHtml, /href="\/">Return to Lumen<\/a>/);
+  assert.doesNotMatch(notFoundHtml, /<script\b|\/_next\//i);
+});
+
+test("uses one dependency-free GitHub Pages deployment path", async () => {
+  assert.deepEqual(packageJson.dependencies ?? {}, {});
+  assert.deepEqual(packageJson.devDependencies ?? {}, {});
+  assert.equal(
+    packageJson.scripts["test:pages"],
+    "node --test tests/static-site.test.mjs",
+  );
+  assert.equal(
+    packageJson.scripts.lint,
+    "node --check tests/static-site.test.mjs",
+  );
+
+  assert.match(workflow, /npm ci/);
+  assert.match(workflow, /npm run lint/);
+  assert.match(workflow, /npm run test:pages/);
+  assert.match(workflow, /path: \.\/public/);
+  assert.doesNotMatch(workflow, /next build|vinext|path: \.\/out/);
+
+  assert.match(readme, /https:\/\/lumen-ai\.eu/);
+  assert.match(readme, /zero-JavaScript/i);
+  assert.match(readme, /GitHub Pages/);
+  assert.doesNotMatch(readme, /OpenAI Sites|rollback/i);
+
+  await Promise.all([
+    assert.rejects(access(new URL(".openai/hosting.json", root))),
+    assert.rejects(access(new URL("app/page.tsx", root))),
+    assert.rejects(access(new URL("worker/index.ts", root))),
+    assert.rejects(access(new URL("next.config.ts", root))),
+  ]);
+});

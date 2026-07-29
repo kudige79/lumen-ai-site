@@ -1,4 +1,44 @@
-@import "tailwindcss";
+/*
+ * Lumen website styles.
+ *
+ * A small standards reset is followed by project-owned CSS. The published
+ * page has no runtime or framework dependency.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+img {
+  height: auto;
+  vertical-align: middle;
+}
+
+summary {
+  display: list-item;
+}
+
+/* Lumen */
 
 :root {
   --paper: #f7f4ee;
@@ -25,6 +65,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 88px;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -297,12 +338,12 @@ h1 {
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   list-style: none;
 }
 
 .trust-list li {
-  padding: 7px 10px;
+  padding: 7px 8px;
   border: 1px solid rgba(22, 133, 88, 0.14);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.55);
@@ -1140,6 +1181,19 @@ h1 {
   font-weight: 650;
 }
 
+.checksum summary::after {
+  content: "›";
+  margin-left: 9px;
+  display: inline-block;
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 160ms ease;
+}
+
+.checksum[open] summary::after {
+  transform: rotate(90deg);
+}
+
 .checksum div {
   margin-top: 15px;
   display: flex;
@@ -1230,7 +1284,7 @@ h1 {
 
 .release-title {
   margin: 7px 0 0;
-  color: var(--blue-deep);
+  color: #303844;
   font-weight: 680;
 }
 
@@ -1249,6 +1303,76 @@ h1 {
 
 .release-highlights li::marker {
   color: var(--blue);
+}
+
+.support-section {
+  border-bottom: 1px solid rgba(23, 27, 36, 0.08);
+  background:
+    radial-gradient(circle at 86% 18%, rgba(56, 214, 245, 0.13), transparent 18rem),
+    var(--paper);
+}
+
+.support-card {
+  padding: 48px 52px;
+  border: 1px solid rgba(8, 127, 255, 0.14);
+  border-radius: var(--radius);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 56px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 20px 60px rgba(27, 45, 76, 0.08);
+}
+
+.support-copy {
+  max-width: 700px;
+}
+
+.support-copy h2 {
+  font-size: clamp(2rem, 4.2vw, 3.3rem);
+}
+
+.support-copy > p:last-child {
+  max-width: 640px;
+  margin: 18px 0 0;
+  color: var(--muted);
+}
+
+.support-payment {
+  min-width: 250px;
+}
+
+.support-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(64px, 1fr));
+  gap: 10px;
+}
+
+.support-button {
+  border-color: rgba(8, 127, 255, 0.24);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--blue-deep);
+  box-shadow: 0 8px 22px rgba(8, 110, 225, 0.08);
+}
+
+.support-button:hover {
+  border-color: rgba(8, 127, 255, 0.4);
+  background: white;
+  box-shadow: 0 11px 26px rgba(8, 110, 225, 0.14);
+}
+
+.support-payment > p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.privacy-copy p a {
+  color: var(--blue-deep);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .faq-grid {
@@ -1295,6 +1419,39 @@ h1 {
 .faq-list p {
   max-width: 700px;
   margin: -4px 50px 24px 0;
+  color: var(--muted);
+}
+
+.error-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+}
+
+.error-page main {
+  width: min(560px, 100%);
+}
+
+.error-card {
+  padding: 54px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.error-card img {
+  margin: 0 auto 28px;
+}
+
+.error-card h1 {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+}
+
+.error-card > p:not(.eyebrow) {
+  margin: 18px 0 28px;
   color: var(--muted);
 }
 
@@ -1427,6 +1584,7 @@ footer {
 
   .split-heading,
   .privacy-grid,
+  .support-card,
   .formats-band,
   .faq-grid {
     grid-template-columns: 1fr;
@@ -1434,6 +1592,14 @@ footer {
 
   .privacy-grid {
     gap: 54px;
+  }
+
+  .support-card {
+    gap: 32px;
+  }
+
+  .support-payment {
+    min-width: 0;
   }
 
   .local-model-card {
@@ -1534,7 +1700,8 @@ footer {
 
   .formats-band,
   .privacy-card,
-  .download-card {
+  .download-card,
+  .support-card {
     padding: 28px 22px;
   }
 
@@ -1580,6 +1747,10 @@ footer {
 
   .release-highlights {
     padding-left: 17px;
+  }
+
+  .error-card {
+    padding: 38px 24px;
   }
 
   .footer-grid {

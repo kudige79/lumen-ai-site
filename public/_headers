@@ -1,8 +1,0 @@
-# Cache content-hashed build assets immutably.
-/assets/*
-  Cache-Control: public, max-age=31536000, immutable
-
-/Lumen-1.1.dmg
-  Content-Type: application/x-apple-diskimage
-  Content-Disposition: attachment; filename="Lumen-1.1.dmg"
-  Cache-Control: public, max-age=31536000, immutable
