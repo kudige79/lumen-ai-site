@@ -35,7 +35,10 @@ function countMatches(value, pattern) {
 test("publishes a complete zero-JavaScript landing page", async () => {
   assert.match(html, /^<!DOCTYPE html>/i);
   assert.match(html, /<html lang="en-AU">/i);
-  assert.match(html, /<title>Lumen — Meaningful filenames for Mac<\/title>/i);
+  assert.match(
+    html,
+    /<title>Lumen — Local-first AI file renamer for Mac<\/title>/i,
+  );
   assert.match(html, /<link rel="stylesheet" href="\/styles\.css">/i);
   assert.doesNotMatch(html, /<script\b/i);
   assert.doesNotMatch(html, /\/_next\//i);
@@ -50,10 +53,27 @@ test("publishes a complete zero-JavaScript landing page", async () => {
   );
 });
 
-test("ships canonical and social-preview metadata for lumen-ai.eu", () => {
+test("ships canonical and search/social-preview metadata for lumen-ai.eu", () => {
+  assert.match(
+    html,
+    /<meta name="description" content="Lumen is a free, local-first AI file renamer for Mac\. It proposes clean filenames for supported documents and opted-in photos; you approve every change\."\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta name="robots" content="index, follow"\s*\/?>/i,
+  );
+  assert.doesNotMatch(html, /<meta name="keywords"/i);
   assert.match(
     html,
     /<link rel="canonical" href="https:\/\/lumen-ai\.eu\/"\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta property="og:title" content="Lumen — Local-first AI file renamer for Mac"\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta property="og:description" content="Lumen is a free, local-first AI file renamer for Mac\. It proposes clean filenames for supported documents and opted-in photos; you approve every change\."\s*\/?>/i,
   );
   assert.match(
     html,
@@ -74,6 +94,14 @@ test("ships canonical and social-preview metadata for lumen-ai.eu", () => {
   assert.match(
     html,
     /<meta name="twitter:card" content="summary_large_image"\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta name="twitter:title" content="Lumen — Local-first AI file renamer for Mac"\s*\/?>/i,
+  );
+  assert.match(
+    html,
+    /<meta name="twitter:description" content="Lumen is a free, local-first AI file renamer for Mac\. It proposes clean filenames for supported documents and opted-in photos; you approve every change\."\s*\/?>/i,
   );
   assert.match(
     html,
@@ -116,6 +144,10 @@ test("publishes crawler discovery files for the canonical URL", () => {
 
 test("preserves the approved Lumen 1.1 product and model facts", () => {
   assert.match(html, /Turn messy files into meaningful names\./);
+  assert.match(
+    html,
+    /Lumen is a free, local-first AI file renamer for Mac that proposes clean, consistent filenames for supported documents and opted-in photos\./,
+  );
   assert.match(html, /Download Lumen 1\.1/);
   assert.match(html, /Download the 20 MB DMG/);
   assert.match(html, /macOS 26\.4 or later/);
