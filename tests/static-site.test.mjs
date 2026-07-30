@@ -6,11 +6,21 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const publicRoot = new URL("public/", root);
 
-const [html, notFoundHtml, css, packageText, workflow, readme] =
-  await Promise.all([
+const [
+  html,
+  notFoundHtml,
+  css,
+  robotsText,
+  sitemapText,
+  packageText,
+  workflow,
+  readme,
+] = await Promise.all([
     readFile(new URL("index.html", publicRoot), "utf8"),
     readFile(new URL("404.html", publicRoot), "utf8"),
     readFile(new URL("styles.css", publicRoot), "utf8"),
+    readFile(new URL("robots.txt", publicRoot), "utf8"),
+    readFile(new URL("sitemap.xml", publicRoot), "utf8"),
     readFile(new URL("package.json", root), "utf8"),
     readFile(new URL(".github/workflows/deploy-pages.yml", root), "utf8"),
     readFile(new URL("README.md", root), "utf8"),
@@ -69,6 +79,39 @@ test("ships canonical and social-preview metadata for lumen-ai.eu", () => {
     html,
     /<meta name="twitter:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i,
   );
+});
+
+test("publishes crawler discovery files for the canonical URL", () => {
+  assert.equal(
+    robotsText,
+    [
+      "User-agent: *",
+      "Allow: /",
+      "",
+      "Sitemap: https://lumen-ai.eu/sitemap.xml",
+      "",
+    ].join("\n"),
+  );
+
+  assert.match(
+    sitemapText,
+    /^<\?xml version="1\.0" encoding="UTF-8"\?>/,
+  );
+  assert.match(
+    sitemapText,
+    /<urlset xmlns="http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9">/,
+  );
+
+  const locations = [
+    ...sitemapText.matchAll(/<loc>([^<]+)<\/loc>/g),
+  ].map((match) => match[1]);
+
+  assert.deepEqual(locations, ["https://lumen-ai.eu/"]);
+  assert.doesNotMatch(
+    sitemapText,
+    /Lumen-1\.1\.dmg|404\.html|github\.io/i,
+  );
+  assert.match(sitemapText, /<\/urlset>\s*$/);
 });
 
 test("preserves the approved Lumen 1.1 product and model facts", () => {
