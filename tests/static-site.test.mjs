@@ -109,6 +109,41 @@ test("ships canonical and search/social-preview metadata for lumen-ai.eu", () =>
   );
 });
 
+test("declares one preferred WebSite identity for Google", () => {
+  assert.equal(
+    countMatches(
+      html,
+      /itemtype="https:\/\/schema\.org\/WebSite"/g,
+    ),
+    1,
+  );
+
+  const siteHeader =
+    html.match(/<header class="site-header"[\s\S]*?<\/header>/i)?.[0] ?? "";
+
+  assert.notEqual(siteHeader, "");
+  assert.match(
+    siteHeader,
+    /<header class="site-header" itemscope itemtype="https:\/\/schema\.org\/WebSite">/i,
+  );
+  assert.match(
+    siteHeader,
+    /<link itemprop="url" href="https:\/\/lumen-ai\.eu\/"\s*\/?>/i,
+  );
+  assert.match(
+    siteHeader,
+    /<meta itemprop="alternateName" content="lumen-ai\.eu"\s*\/?>/i,
+  );
+  assert.match(
+    siteHeader,
+    /<span itemprop="name">Lumen<\/span>/i,
+  );
+  assert.match(
+    html,
+    /<meta property="og:site_name" content="Lumen"\s*\/?>/i,
+  );
+});
+
 test("publishes crawler discovery files for the canonical URL", () => {
   assert.equal(
     robotsText,
