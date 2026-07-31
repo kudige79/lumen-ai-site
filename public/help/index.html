@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="preload" href="/lumen-icon.png" as="image"/>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/help/help.css">
+    <meta name="theme-color" content="#f7f4ee"/>
+    <meta name="color-scheme" content="light"/>
+    <title>Lumen 1.1 User Guide — Help for the Mac file renamer</title>
+    <meta name="description" content="Learn how to use Lumen 1.1: choose an AI model, process documents and photos, review names, batch rename files, undo changes and troubleshoot problems."/>
+    <meta name="application-name" content="Lumen"/>
+    <meta name="author" content="Kudige Panduranga Shenoy"/>
+    <meta name="robots" content="index, follow"/>
+    <link rel="canonical" href="https://lumen-ai.eu/help/"/>
+    <meta property="og:title" content="Lumen 1.1 User Guide"/>
+    <meta property="og:description" content="A detailed guide to choosing an AI model, reviewing filenames, batch renaming, undoing changes and troubleshooting Lumen 1.1."/>
+    <meta property="og:url" content="https://lumen-ai.eu/help/"/>
+    <meta property="og:site_name" content="Lumen"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:image" content="https://lumen-ai.eu/og.png"/>
+    <meta property="og:image:type" content="image/png"/>
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+    <meta property="og:image:alt" content="Lumen — Meaningful filenames for Mac"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="Lumen 1.1 User Guide"/>
+    <meta name="twitter:description" content="Learn how to use every major workflow in Lumen 1.1."/>
+    <meta name="twitter:image" content="https://lumen-ai.eu/og.png"/>
+    <meta name="twitter:image:alt" content="Lumen — Meaningful filenames for Mac"/>
+    <link rel="shortcut icon" href="/favicon.png"/>
+    <link rel="icon" href="/favicon.png"/>
+    <link rel="apple-touch-icon" href="/lumen-icon.png"/>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="site-header">
+      <div class="nav-shell">
+        <a class="brand" href="/" aria-label="Lumen home"><img src="/lumen-icon.png" alt="" width="42" height="42"/><span>Lumen</span></a>
+        <nav class="desktop-nav" aria-label="Primary navigation">
+          <a href="/#features">Features</a><a href="/#models">Models</a><a href="/help/" aria-current="page">Help</a><a href="/#privacy">Privacy</a><a href="/#requirements">Requirements</a>
+        </nav>
+        <a class="button button-small" href="/Lumen-1.1.dmg" download>Download</a>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <section class="guide-hero" aria-labelledby="guide-title">
+        <div class="guide-glow" aria-hidden="true"></div>
+        <div class="shell guide-hero-grid">
+          <div>
+            <p class="eyebrow">Lumen 1.1 · User Guide</p>
+            <h1 id="guide-title">From first drop to a safe rename.</h1>
+            <p class="guide-intro">
+              Learn the complete Lumen workflow: choose how files are analysed, shape the filename, review every proposal, handle difficult files and undo a rename when needed.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#first-run">Start your first run</a><a class="button button-secondary" href="#troubleshooting">Solve a problem</a>
+            </div>
+          </div>
+          <aside class="version-card" aria-label="Guide version">
+            <img src="/lumen-icon.png" alt="" width="72" height="72"/>
+            <div>
+              <strong>For the current public release</strong>
+              <p>Lumen 1.1 · Build 2 · released 16 July 2026</p>
+            </div>
+            <p class="version-note">This guide deliberately excludes work still in development for Lumen 1.2. It will be updated when 1.2 ships.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="guide-overview" aria-labelledby="overview-title">
+        <div class="shell">
+          <h2 id="overview-title" class="visually-hidden">Lumen workflow overview</h2>
+          <ol class="overview-steps">
+            <li><span>01</span><strong>Choose</strong><p>Add the files and select Local AI or an enabled cloud provider.</p></li>
+            <li><span>02</span><strong>Review</strong><p>Inspect Lumen’s proposals, notes and warnings before approving anything.</p></li>
+            <li><span>03</span><strong>Rename</strong><p>Execute only the approved names; use the local rename log if you need to revert.</p></li>
+          </ol>
+        </div>
+      </section>
+
+      <div class="shell guide-layout">
+        <div class="guide-nav-card">
+          <nav aria-label="User guide contents">
+            <p>In this guide</p>
+            <ol>
+              <li><a href="#how-it-works">How Lumen works</a></li>
+              <li><a href="#first-run">Your first run</a></li>
+              <li><a href="#choose-ai">Choose an AI model</a></li>
+              <li><a href="#filename-format">Filename format</a></li>
+              <li><a href="#photo-naming">Photo naming</a></li>
+              <li><a href="#name-review">Name Review</a></li>
+              <li><a href="#results">Approve and rename</a></li>
+              <li><a href="#unprocessed">Unprocessed files</a></li>
+              <li><a href="#batch-rename">Batch Rename</a></li>
+              <li><a href="#revert">Undo a rename</a></li>
+              <li><a href="#name-mappings">Name Mappings</a></li>
+              <li><a href="#privacy-permissions">Privacy and permissions</a></li>
+              <li><a href="#shortcuts">Keyboard shortcuts</a></li>
+              <li><a href="#troubleshooting">Troubleshooting</a></li>
+            </ol>
+          </nav>
+        </div>
+
+        <article class="guide-copy">
+          <section class="guide-section" id="how-it-works" aria-labelledby="how-title">
+            <p class="section-number">01</p>
+            <h2 id="how-title">How Lumen works</h2>
+            <p class="section-lead">Lumen reads a file, identifies useful details and proposes a consistent filename. It does not rename the file until you approve the proposal and execute the rename.</p>
+            <div class="callout callout-safe">
+              <strong>You remain in control.</strong>
+              <p>Analysis runs on your Mac by default. Every AI-generated name is a suggestion, and rejected or unticked rows are not renamed.</p>
+            </div>
+            <h3>Supported files</h3>
+            <div class="format-table" role="region" aria-label="Supported file formats" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">Category</th><th scope="col">Formats</th><th scope="col">What to expect</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Documents</th><td>PDF, DOCX, XLSX, PPTX, TXT</td><td>Text and form fields are extracted locally before analysis.</td></tr>
+                  <tr><th scope="row">Photos and images</th><td>JPEG, PNG, HEIC, HEIF, TIFF, TIF, GIF, BMP, WebP</td><td>Readable text is handled as a document; opted-in photo naming handles images without useful text.</td></tr>
+                  <tr><th scope="row">Apple iWork</th><td>Pages, Numbers, Keynote</td><td>Lumen reads an embedded preview when available. Modern files generally expose only page 1.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="fine-print">Video, audio, archives, design files and legacy <code>.doc</code>, <code>.ppt</code> and <code>.xls</code> files are not analysed. Visible unsupported items normally appear in <strong>Unprocessed</strong> with a reason; hidden or internal folder items may be omitted from a scan. Files above roughly 500 MB are also skipped.</p>
+          </section>
+
+          <section class="guide-section" id="first-run" aria-labelledby="first-run-title">
+            <p class="section-number">02</p>
+            <h2 id="first-run-title">Run your first set of files</h2>
+            <ol class="instruction-list">
+              <li><div><strong>Prepare the AI model.</strong><p>Local AI is selected by default. On an Apple-silicon Mac with 24 GB+ memory, open <strong>Settings → AI Provider</strong> and start the one-time Phi-4 14B model download of approximately 8.26 GB before first use. On an Intel Mac, configure and enable a cloud provider instead.</p></div></li>
+              <li><div><strong>Add files in Drop Zone.</strong><p>Drag in individual files or one or more folders, or use <strong>Choose Folder…</strong> / <strong>Choose Files…</strong>. Multiple folders remain grouped by source.</p></div></li>
+              <li><div><strong>Check the queue.</strong><p>Highlight a row and press <kbd>Space</kbd> to open Quick Look, or click its eye button. Press <kbd>Y</kbd> or <kbd>N</kbd> to tick or untick the highlighted row. Tick rows and choose <strong>Remove</strong> to leave them out; <strong>Restore</strong> brings them back.</p></div></li>
+              <li><div><strong>Confirm the essentials.</strong><p>At the bottom of Drop Zone, check the active AI model, the <strong>Photo naming</strong> switch and the provider-ready chip. The chip opens Settings when the model or API key needs attention.</p></div></li>
+              <li><div><strong>Process, then review.</strong><p>Click <strong>Process Files</strong>. The <strong>Progress</strong> tab shows the active model, current file and running counts; its completion summary includes named, skipped and AI-declined files plus approximate cloud token usage. If a run contains both documents and photos, Results separates them into <strong>Documents</strong> and <strong>Images</strong> segments.</p></div></li>
+            </ol>
+          </section>
+
+          <section class="guide-section" id="choose-ai" aria-labelledby="ai-title">
+            <p class="section-number">03</p>
+            <h2 id="ai-title">Choose an AI model</h2>
+            <p>Open <strong>Settings → AI Provider</strong> to choose the analyser for the next run.</p>
+            <div class="choice-grid">
+              <section>
+                <span class="choice-label">Default</span>
+                <h3>Local AI</h3>
+                <p>Runs on your Mac, needs no account or API key and has no per-use charge. It handles everyday documents well, but needs the local model download and supported Apple-silicon hardware.</p>
+              </section>
+              <section>
+                <span class="choice-label">Optional</span>
+                <h3>Cloud AI</h3>
+                <p>Claude, OpenAI, Gemini and xAI’s Grok can be enabled with your own API key. They may be more accurate on difficult files and may charge your provider account.</p>
+              </section>
+            </div>
+            <h3>Set up a cloud provider</h3>
+            <ol>
+              <li>Paste your key in <strong>Settings → Cloud providers</strong>.</li>
+              <li>Click <strong>Test</strong> to send a small key check with no document.</li>
+              <li>Switch the provider on. Enabled means Lumen may use that provider and its API credits.</li>
+              <li>Select it under <strong>AI Provider</strong>.</li>
+              <li>Review and accept the disclosure before the first file-related transmission to that provider.</li>
+            </ol>
+            <div class="callout">
+              <strong>Try a second opinion.</strong>
+              <p>Start locally, then use <strong>Try with [provider]</strong> when it is offered on an eligible result. Tick eligible rows and choose <strong>Try Selected with [provider]</strong> to re-check that subset.</p>
+            </div>
+            <p class="fine-print">For the exact models and cloud file-handling differences in Lumen 1.1, see the <a href="/#models">supported-model comparison</a>.</p>
+          </section>
+
+          <section class="guide-section" id="filename-format" aria-labelledby="format-title">
+            <p class="section-number">04</p>
+            <h2 id="format-title">Shape the filename</h2>
+            <p>Under <strong>Settings → Filename Format</strong>, choose the included fields, drag them into order and select a separator. Lumen automatically uses separate schemas for personal and transactional documents.</p>
+            <div class="example-stack">
+              <div><span>Personal document</span><code>Alex Morgan - AU - Passport - 2025-08-12.pdf</code></div>
+              <div><span>Transactional document</span><code>Harbour Bank - AU - Statement - Alex Morgan - 2026-03-31.pdf</code></div>
+            </div>
+            <ul>
+              <li><strong>Personal documents</strong> include passports, certificates, IDs and visas.</li>
+              <li><strong>Transactional documents</strong> include invoices, statements, letters, contracts and warranties.</li>
+              <li>A required field Lumen cannot determine appears as <strong>UNKNOWN</strong>.</li>
+              <li>Optional <strong>Brand</strong> and <strong>ID Suffix</strong> fields are left out when they do not apply. Brand is available in the default transactional schema.</li>
+            </ul>
+          </section>
+
+          <section class="guide-section" id="photo-naming" aria-labelledby="photo-title">
+            <p class="section-number">05</p>
+            <h2 id="photo-title">Name photos by content and metadata</h2>
+            <p>Photo naming is off by default. Turn on <strong>Photo naming</strong> in Drop Zone or <strong>Settings → Photo Naming</strong> to name images that contain little or no readable text.</p>
+            <div class="photo-parts">
+              <div><strong>Description</strong><p>A short visual description from a cloud provider. Local AI uses metadata only.</p></div>
+              <div><strong>Place</strong><p>A city and country code derived from embedded GPS coordinates when location is available.</p></div>
+              <div><strong>Date</strong><p>The photo’s embedded capture date, when present.</p></div>
+              <div><strong>Label</strong><p>An optional run-wide label such as “Bali Trip”.</p></div>
+            </div>
+            <p>Choose and reorder these under <strong>Settings → Photo Naming → Photo files</strong>. Photo filenames use the same separator as documents. When two photos would receive the same name, Lumen adds <code>(2)</code>, <code>(3)</code> and so on.</p>
+            <h3>Photo location modes</h3>
+            <dl class="definition-list">
+              <div><dt>Off</dt><dd>No place is included.</dd></div>
+              <div><dt>Raw</dt><dd>Coordinates stay on your Mac and can appear directly in the name.</dd></div>
+              <div><dt>Resolved</dt><dd>The default. After separate consent, coordinates are sent to Apple’s geocoding service to obtain a place name such as <em>Dubai, AE</em>.</dd></div>
+            </dl>
+            <div class="callout">
+              <strong>Check unusual dates before renaming.</strong>
+              <p>When a run has at least five dated photos, a calendar badge in <strong>Results → Images</strong> marks a capture date far outside the rest of the batch. Use the <strong>Outliers</strong> filter to review those photos together.</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="name-review" aria-labelledby="name-review-title">
+            <p class="section-number">06</p>
+            <h2 id="name-review-title">Keep people’s names consistent</h2>
+            <p>When Lumen finds a person it does not recognise, the name appears in <strong>Name Review</strong>. For each name, choose one action:</p>
+            <ul>
+              <li><strong>Map</strong> the variation to an existing canonical name, or choose <strong>Or enter a new canonical name</strong>.</li>
+              <li><strong>Ignore permanently</strong> a word or person who should never be treated as an owner.</li>
+              <li><strong>Skip for now</strong> to leave the decision unresolved for this session.</li>
+            </ul>
+            <p>Click the dynamic <strong>Save Decision</strong> / <strong>Save Decisions</strong> button. Mappings and permanent ignores are applied to matching proposals in the current run and remembered for later files; <strong>Skip for now</strong> is not persisted.</p>
+          </section>
+
+          <section class="guide-section" id="results" aria-labelledby="results-title">
+            <p class="section-number">07</p>
+            <h2 id="results-title">Approve and execute names</h2>
+            <p>Each row in <strong>Results</strong> shows the original name, proposed name, notes, document type and confidence. New proposals arrive approved (ticked) by default, but no file is renamed until you click <strong>Execute Renames</strong>. Review every ticked row first.</p>
+            <ul class="check-list">
+              <li><strong>Approve</strong> or <strong>Reject</strong> a row, or use <strong>Select all</strong> to change every tick in the active Documents or Images segment.</li>
+              <li>Highlight a row and press <kbd>Space</kbd> for Quick Look, <kbd>Y</kbd> to approve, <kbd>N</kbd> to reject or <kbd>Return</kbd> to edit its name.</li>
+              <li>Use <strong>Edit Name…</strong> for a one-off correction. Use <strong>Name Review</strong> when the same person’s name needs fixing across several files.</li>
+              <li>Use <strong>Try with [provider]</strong> when it is offered on an eligible low- or medium-confidence result, or on a Local AI photo that has no visual description.</li>
+              <li>Click <strong>Execute Renames</strong> only after checking the approved subset.</li>
+            </ul>
+            <div class="warning-grid">
+              <div><strong>Duplicate warning</strong><p>Two approved files in the same folder would receive the same name. Edit or untick a row before execution. If a different file already occupies a target name on disk, Lumen skips that row during execution and reports the error.</p></div>
+              <div><strong>Unresolved name warning</strong><p>The row may stay ticked, but Lumen skips it at execution until you resolve the person in Name Review or edit the filename.</p></div>
+            </div>
+            <p class="fine-print">For loose files, macOS may ask you to grant access to each parent folder before an in-place rename. Folders selected or dragged into Drop Zone already carry that access. Lumen reuses saved access when available, but macOS may ask again.</p>
+          </section>
+
+          <section class="guide-section" id="unprocessed" aria-labelledby="unprocessed-title">
+            <p class="section-number">08</p>
+            <h2 id="unprocessed-title">Handle files Lumen could not name</h2>
+            <p>A file appears in <strong>Unprocessed</strong> when it is unsupported, unreadable or could not be named confidently. The <strong>Reason</strong> column explains why.</p>
+            <ul>
+              <li><strong>Manually Name File</strong> lets you type a safe name yourself. Highlight it and press <kbd>Space</kbd> for Quick Look or <kbd>Return</kbd> to open the editor.</li>
+              <li><strong>Try with [provider]</strong> re-attempts an eligible file with an enabled cloud model. <strong>Try Selected with…</strong> handles a ticked subset. Successful rechecks move to Results; files that still cannot be named remain here.</li>
+              <li><strong>Rename [n] Tagged File(s)</strong> executes safe manual names directly from Unprocessed.</li>
+              <li><strong>Send to Batch Rename</strong> hands over ticked rows, or all visible rows when none are ticked. They remain represented in Unprocessed until the Batch rename succeeds. In Lumen 1.1, this is the only AI workflow that sends rows into Batch Rename.</li>
+            </ul>
+            <h3>Common reasons</h3>
+            <dl class="reason-list">
+              <div><dt>Media — cannot be read by AI</dt><dd>Video and audio have no supported text extraction path.</dd></div>
+              <div><dt>Legacy Excel (.xls)</dt><dd>Open it in Excel, save it as <code>.xlsx</code>, then process the copy.</dd></div>
+              <div><dt>Too large for the model</dt><dd>Split the PDF or use a smaller copy. Oversized PDFs can be uploaded only to Claude or OpenAI.</dd></div>
+              <div><dt>AI refused</dt><dd>The provider may decline sensitive or credential-like content. Name it manually.</dd></div>
+              <div><dt>Content too generic or limited</dt><dd>Try a cloud model or enter a name manually.</dd></div>
+              <div><dt>Encrypted or password-protected</dt><dd>Remove the password and save an unprotected copy first.</dd></div>
+            </dl>
+          </section>
+
+          <section class="guide-section" id="batch-rename" aria-labelledby="batch-title">
+            <p class="section-number">09</p>
+            <h2 id="batch-title">Build rule-based names with Batch Rename</h2>
+            <p><strong>Batch Rename</strong> is for predictable transformations: adding counters, removing repeated text, changing case or rebuilding names from a date and prefix. Use <strong>Pick folder…</strong>, drag in folders or files, or receive files sent from <strong>Unprocessed</strong>. Multiple folders stay grouped.</p>
+            <div class="callout">
+              <strong>Preview first.</strong>
+              <p>The preview marks a name that already exists or a collision between two rows. Resolve every conflict before clicking <strong>Execute Rename</strong>.</p>
+            </div>
+            <h3>Rules run in this order</h3>
+            <ol>
+              <li><strong>Find / Replace</strong> changes the existing filename.</li>
+              <li><strong>Discard original filename</strong>, when enabled, clears the remaining stem.</li>
+              <li><strong>Prefix</strong> and <strong>Suffix</strong> are added and their tokens are substituted.</li>
+              <li><strong>Case</strong> changes the filename stem; the extension is left unchanged.</li>
+            </ol>
+            <h3>Tokens and regular expressions</h3>
+            <ul>
+              <li><code>{date}</code> inserts a date in <code>YYYY-MM-DD</code> format. Choose <strong>File modified</strong>, <strong>Today</strong> or <strong>EXIF</strong> under <strong>Date for {date}</strong>.</li>
+              <li><code>{#}</code>, <code>{##}</code>, <code>{###}</code> and <code>{####}</code> insert a padded counter beginning at the <strong>starts at</strong> value.</li>
+              <li><strong>Find</strong> accepts regular expressions. Reuse capture groups in Replace as <code>$1</code>, <code>$2</code> and so on.</li>
+              <li>Case options are <strong>As-is</strong>, <strong>lowercase</strong>, <strong>UPPERCASE</strong> and <strong>Title Case</strong>.</li>
+            </ul>
+            <p class="fine-print">Counters follow the order currently shown in the preview. Highlight a row and press <kbd>Space</kbd> to preview it, <kbd>Y</kbd> to include it or <kbd>N</kbd> to exclude it.</p>
+            <div class="example-table" role="region" aria-label="Batch Rename examples" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">Goal</th><th scope="col">Rule</th><th scope="col">Result</th></tr></thead>
+                <tbody>
+                  <tr><td>Number files</td><td>Suffix <code>_{###}</code></td><td><code>report_001.pdf</code></td></tr>
+                  <tr><td>Rebuild with date</td><td>Discard original; Prefix <code>Bali_{date}_{###}</code></td><td><code>Bali_2026-05-05_001.jpg</code></td></tr>
+                  <tr><td>Strip version suffix</td><td>Find <code>_v\d+$</code>; Replace empty</td><td><code>draft_v3.docx</code> → <code>draft.docx</code></td></tr>
+                  <tr><td>Swap a prefix</td><td>Find <code>^IMG_</code>; Replace <code>Photo_</code></td><td><code>IMG_2849.jpg</code> → <code>Photo_2849.jpg</code></td></tr>
+                  <tr><td>Reformat a date</td><td>Find <code>(\d{4})-(\d{2})-(\d{2})</code>; Replace <code>$1.$2.$3</code></td><td><code>2026-05-05</code> → <code>2026.05.05</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="guide-section" id="revert" aria-labelledby="revert-title">
+            <p class="section-number">10</p>
+            <h2 id="revert-title">Undo a rename</h2>
+            <p>Lumen writes a local rename log after successful Results, Batch Rename and manual Unprocessed renames. The logs live inside the app and remain available after relaunch.</p>
+            <ol>
+              <li>Open <strong>Revert Renames</strong> and choose a previous run.</li>
+              <li>Tick the files to restore, or use <strong>Select All</strong>.</li>
+              <li>Click <strong>Revert [n] Selected</strong> and confirm.</li>
+            </ol>
+            <p>Lumen warns when a selected file appears to have been modified or replaced since it was renamed. The warning is advisory: if you continue, the file is reverted as it exists now. A revert can fail if the file moved, the original name is no longer available or folder access is missing.</p>
+          </section>
+
+          <section class="guide-section" id="name-mappings" aria-labelledby="mappings-title">
+            <p class="section-number">11</p>
+            <h2 id="mappings-title">Maintain Name Mappings</h2>
+            <p><strong>Name Mappings</strong> is Lumen’s on-device name database. A mapping connects a <em>name as found</em> to the canonical spelling used in filenames.</p>
+            <ul>
+              <li><strong>Canonical Mappings</strong> connect variations to a preferred spelling, keeping one person’s documents consistent.</li>
+              <li>Use <strong>Add Mapping</strong> or <strong>Edit Mapping</strong> to maintain those relationships.</li>
+              <li><strong>Permanently Ignored</strong> entries are never proposed as owners. This is useful for third parties who appear in a document but do not own it.</li>
+              <li>Mappings persist between launches and are used in later analyses.</li>
+            </ul>
+          </section>
+
+          <section class="guide-section" id="privacy-permissions" aria-labelledby="privacy-help-title">
+            <p class="section-number">12</p>
+            <h2 id="privacy-help-title">Understand privacy and permissions</h2>
+            <ul class="privacy-list">
+              <li><strong>Local by default.</strong><span>Local extraction, OCR and Local AI analysis remain on your Mac.</span></li>
+              <li><strong>Cloud is optional.</strong><span>Your own API key connects Lumen directly to the selected provider after a per-provider consent prompt.</span></li>
+              <li><strong>What cloud AI receives.</strong><span>A document’s filename and locally extracted text are normally sent. Claude and OpenAI can also receive PDFs or images for native-file fallback and oversized-PDF upload. Cloud photo descriptions send eligible images.</span></li>
+              <li><strong>Location has separate consent.</strong><span>Resolved photo location sends embedded GPS coordinates to Apple’s geocoding service, not to the developer.</span></li>
+              <li><strong>File access is scoped.</strong><span>Lumen can scan only the files and folders you select or drag in. macOS may ask for folder access again when a rename or revert needs it.</span></li>
+              <li><strong>No Lumen account.</strong><span>The app has no developer-operated servers, analytics, advertising or tracking.</span></li>
+            </ul>
+            <a class="text-link" href="https://kudige79.github.io/lumen-privacy/">Read the full Privacy Policy <span aria-hidden="true">↗</span></a>
+          </section>
+
+          <section class="guide-section" id="shortcuts" aria-labelledby="shortcuts-title">
+            <p class="section-number">13</p>
+            <h2 id="shortcuts-title">Keyboard shortcuts</h2>
+            <p>Click a row first so it is highlighted. In Lumen 1.1, these shortcuts act on that highlighted row. A tick has a different purpose in each tab: it marks a file for removal in Drop Zone, approves it in Results, and selects or includes it in the other file lists.</p>
+            <div class="shortcut-grid">
+              <div><kbd>Space</kbd><span><strong>Quick Look</strong> the highlighted file.</span></div>
+              <div><kbd>Y</kbd><span><strong>Tick</strong> the row — mark for removal in Drop Zone, approve in Results, or select/include elsewhere.</span></div>
+              <div><kbd>N</kbd><span><strong>Untick</strong> the row — keep it out of those actions.</span></div>
+              <div><kbd>Return</kbd><span><strong>Edit</strong> where names are editable; toggle selection in Revert Renames.</span></div>
+            </div>
+          </section>
+
+          <section class="guide-section" id="troubleshooting" aria-labelledby="troubleshooting-title">
+            <p class="section-number">14</p>
+            <h2 id="troubleshooting-title">Troubleshooting</h2>
+            <div class="troubleshooting-list">
+              <details>
+                <summary>Process Files does nothing</summary>
+                <p>Confirm that Drop Zone contains at least one included file. Check the provider-ready chip: Local AI needs its model installed, while a cloud provider needs a saved key, must be switched on and must be selected under AI Provider.</p>
+              </details>
+              <details>
+                <summary>A result is UNKNOWN or incorrect</summary>
+                <p>Open Quick Look and check whether the source is readable. Clearer scans improve on-device OCR. Set the document’s languages under <strong>Settings → Advanced → OCR Languages</strong>, try an enabled cloud provider, resolve any owner in Name Review or edit the name manually.</p>
+              </details>
+              <details>
+                <summary>A Pages, Numbers or Keynote file names poorly</summary>
+                <p>Lumen reads an embedded preview when available. Modern iWork files generally expose only the first page, so place identifying text on page 1. Some older bundles provide a multi-page preview.</p>
+              </details>
+              <details>
+                <summary>A photo has no location in its name</summary>
+                <p>The camera must have stored GPS coordinates in the file. Photos taken with location services off, or stripped of location by a messaging app, are named without a place. Check that Photo naming is on and that Location is not set to Off.</p>
+              </details>
+              <details>
+                <summary>A cloud key, credit or rate-limit error appears</summary>
+                <p>These errors come from your provider account, not Lumen. Use <strong>Test</strong> in <strong>Settings → Cloud providers</strong>, then check the provider’s own billing and usage dashboard. Approximate token usage appears under <strong>Settings → Advanced → Cloud Token Usage</strong>; it is a reference, not a bill.</p>
+              </details>
+              <details>
+                <summary>A file is too large</summary>
+                <p>Files above roughly 500 MB are skipped. For a large PDF, use a smaller or split copy. Claude and OpenAI can accept eligible oversized PDFs through their Files APIs; Local AI, Gemini and xAI cannot.</p>
+              </details>
+              <details>
+                <summary>The developer asked for a diagnostic log</summary>
+                <p>Open <strong>Settings → Advanced</strong>, switch on <strong>Enable Debug Logging</strong> and reproduce the issue. Raw debug logs can contain document excerpts, AI responses, filenames and paths, so choose <strong>Export Share-Safe Log</strong> before sharing. The export replaces filenames and folder paths with anonymous tokens and excludes document text. Debug logging is off by default.</p>
+              </details>
+            </div>
+          </section>
+
+          <section class="guide-contact" aria-labelledby="still-need-help-title">
+            <div>
+              <p class="eyebrow">Still need help?</p>
+              <h2 id="still-need-help-title">Send the developer a clear bug report.</h2>
+              <p>Include your Lumen version, macOS version, the tab you were using and the exact message shown. Do not attach private documents unless you intend to share them.</p>
+            </div>
+            <a class="button button-primary" href="mailto:kudige@icloud.com?subject=Lumen%201.1%20support">Email support</a>
+          </section>
+        </article>
+      </div>
+    </main>
+    <footer>
+      <div class="shell footer-grid">
+        <a class="brand footer-brand" href="/" aria-label="Lumen home"><img src="/lumen-icon.png" alt="" width="38" height="38"/><span>Lumen</span></a>
+        <p>Local-first file renaming for macOS.</p>
+        <div class="footer-links">
+          <a href="/">Home</a><a href="/help/" aria-current="page">User Guide</a><a href="/#changelog">Changelog</a><a href="https://kudige79.github.io/lumen-privacy/">Privacy</a><a href="mailto:kudige@icloud.com?subject=Lumen%20feedback%20or%20support">Contact</a><a href="/Lumen-1.1.dmg" download>Download 1.1</a>
+        </div>
+        <small>© 2026 Kudige Panduranga Shenoy</small>
+      </div>
+    </footer>
+  </body>
+</html>

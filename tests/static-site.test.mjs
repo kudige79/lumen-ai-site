@@ -8,6 +8,8 @@ const publicRoot = new URL("public/", root);
 
 const [
   html,
+  helpHtml,
+  helpCss,
   notFoundHtml,
   css,
   robotsText,
@@ -17,6 +19,8 @@ const [
   readme,
 ] = await Promise.all([
     readFile(new URL("index.html", publicRoot), "utf8"),
+    readFile(new URL("help/index.html", publicRoot), "utf8"),
+    readFile(new URL("help/help.css", publicRoot), "utf8"),
     readFile(new URL("404.html", publicRoot), "utf8"),
     readFile(new URL("styles.css", publicRoot), "utf8"),
     readFile(new URL("robots.txt", publicRoot), "utf8"),
@@ -169,7 +173,10 @@ test("publishes crawler discovery files for the canonical URL", () => {
     ...sitemapText.matchAll(/<loc>([^<]+)<\/loc>/g),
   ].map((match) => match[1]);
 
-  assert.deepEqual(locations, ["https://lumen-ai.eu/"]);
+  assert.deepEqual(locations, [
+    "https://lumen-ai.eu/",
+    "https://lumen-ai.eu/help/",
+  ]);
   assert.doesNotMatch(
     sitemapText,
     /Lumen-1\.1\.dmg|404\.html|github\.io/i,
@@ -358,6 +365,129 @@ test("includes the optional Wise support section", () => {
   assert.match(html, /<a href="#support">Support<\/a>/);
   assert.match(html, /Payments open on Wise\./);
   assert.match(css, /\.support-card\s*\{/);
+});
+
+test("publishes a detailed, versioned Lumen 1.1 user guide", () => {
+  assert.match(helpHtml, /^<!DOCTYPE html>/i);
+  assert.match(helpHtml, /<html lang="en-AU">/i);
+  assert.match(
+    helpHtml,
+    /<title>Lumen 1\.1 User Guide — Help for the Mac file renamer<\/title>/i,
+  );
+  assert.match(
+    helpHtml,
+    /<link rel="canonical" href="https:\/\/lumen-ai\.eu\/help\/"\s*\/?>/i,
+  );
+  assert.match(
+    helpHtml,
+    /<meta name="description" content="Learn how to use Lumen 1\.1: choose an AI model, process documents and photos, review names, batch rename files, undo changes and troubleshoot problems\."\s*\/?>/i,
+  );
+  assert.match(helpHtml, /<meta name="robots" content="index, follow"\s*\/?>/i);
+  assert.match(helpHtml, /<meta property="og:title" content="Lumen 1\.1 User Guide"\s*\/?>/i);
+  assert.match(helpHtml, /<meta property="og:url" content="https:\/\/lumen-ai\.eu\/help\/"\s*\/?>/i);
+  assert.match(helpHtml, /<meta name="twitter:title" content="Lumen 1\.1 User Guide"\s*\/?>/i);
+  assert.match(helpHtml, /<meta property="og:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
+  assert.match(helpHtml, /<meta name="twitter:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
+  assert.match(helpHtml, /Lumen 1\.1 · Build 2 · released 16 July 2026/);
+  assert.match(helpHtml, /excludes work still in development for Lumen 1\.2/);
+  assert.match(html, /<a href="\/help\/">Help<\/a>/);
+  assert.match(html, /<a href="\/help\/">User Guide<\/a>/);
+  assert.equal(countMatches(html, /href="\/help\/"/g), 2);
+
+  const requiredSections = [
+    "how-it-works",
+    "first-run",
+    "choose-ai",
+    "filename-format",
+    "photo-naming",
+    "name-review",
+    "results",
+    "unprocessed",
+    "batch-rename",
+    "revert",
+    "name-mappings",
+    "privacy-permissions",
+    "shortcuts",
+    "troubleshooting",
+  ];
+
+  for (const id of requiredSections) {
+    assert.match(helpHtml, new RegExp(`id="${id}"`));
+    assert.match(helpHtml, new RegExp(`href="#${id}"`));
+  }
+
+  assert.match(helpHtml, /Settings → AI Provider/);
+  assert.match(helpHtml, /Phi-4 14B model download of approximately 8\.26 GB/);
+  assert.match(helpHtml, /Try Selected with \[provider\]/);
+  assert.match(helpHtml, /Send to Batch Rename/);
+  assert.match(helpHtml, /all visible rows when none are ticked/);
+  assert.match(
+    helpHtml,
+    /In Lumen 1\.1, (?:this|Unprocessed) is the only AI workflow that sends rows into Batch Rename/,
+  );
+  assert.match(helpHtml, /Rules run in this order/);
+  assert.match(helpHtml, /New proposals arrive approved \(ticked\) by default/);
+  assert.match(helpHtml, /mark for removal in Drop Zone/);
+  assert.match(helpHtml, /Counters follow the order currently shown in the preview/);
+  assert.match(helpHtml, /<kbd>Y<\/kbd> to include it/);
+  assert.match(helpHtml, /Export Share-Safe Log/);
+  assert.doesNotMatch(helpHtml, /Return to Results|Return to Unprocessed|Names Backup/);
+  assert.doesNotMatch(helpHtml, /⌘-click|⇧-click|⌘A/);
+  assert.doesNotMatch(helpHtml, /<script\b|\/_next\/|javascript:|\son[a-z]+=/i);
+  assert.doesNotMatch(helpCss, /@import|--theme\(/i);
+});
+
+test("keeps help-page references, labels and local assets intact", async () => {
+  const ids = [...helpHtml.matchAll(/\bid="([^"]+)"/g)].map(
+    (match) => match[1],
+  );
+  assert.equal(new Set(ids).size, ids.length, "Help HTML IDs must be unique");
+  const idSet = new Set(ids);
+
+  for (const match of helpHtml.matchAll(/\bhref="#([^"]+)"/g)) {
+    assert.ok(idSet.has(match[1]), `Missing help fragment target #${match[1]}`);
+  }
+
+  const landingIds = new Set(
+    [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]),
+  );
+  for (const match of helpHtml.matchAll(/\bhref="\/#([^"]+)"/g)) {
+    assert.ok(
+      landingIds.has(match[1]),
+      `Missing landing-page fragment target /#${match[1]}`,
+    );
+  }
+
+  for (const match of helpHtml.matchAll(/\baria-labelledby="([^"]+)"/g)) {
+    for (const id of match[1].split(/\s+/)) {
+      assert.ok(idSet.has(id), `Missing help aria-labelledby target #${id}`);
+    }
+  }
+
+  const disclosures = [
+    ...helpHtml.matchAll(/<details\b[\s\S]*?<\/details>/g),
+  ];
+  assert.equal(disclosures.length, 7);
+  for (const disclosure of disclosures) {
+    assert.match(disclosure[0], /<summary>[\s\S]*?<\/summary>/);
+  }
+
+  const localAssets = new Set(
+    [...helpHtml.matchAll(/\b(?:href|src)="\/([^"#?]+)"/g)].map(
+      (match) => match[1],
+    ),
+  );
+  await Promise.all(
+    [...localAssets].map((path) => access(new URL(path, publicRoot))),
+  );
+
+  assert.match(helpHtml, /Skip to main content/);
+  assert.match(helpCss, /\.guide-layout\s*\{/);
+  assert.match(helpCss, /@media \(max-width: 620px\)/);
+  assert.match(
+    css,
+    /@media \(max-width: 840px\)[\s\S]*?\.site-header \.desktop-nav\s*\{[^}]*flex-wrap: wrap;/,
+  );
 });
 
 test("keeps native page behaviour and internal references intact", async () => {

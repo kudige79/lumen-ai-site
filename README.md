@@ -1,8 +1,8 @@
 # Lumen website
 
-The public download site for **Lumen**, a free, local-first file renamer for
-macOS. The canonical site is a responsive, zero-JavaScript HTML5 page published
-at [lumen-ai.eu](https://lumen-ai.eu) through GitHub Pages.
+The public download and help site for **Lumen**, a free, local-first file
+renamer for macOS. The canonical site is a responsive, zero-JavaScript HTML5
+site published at [lumen-ai.eu](https://lumen-ai.eu) through GitHub Pages.
 
 This repository (`kudige79/lumen-ai-site`) is the single source of truth for the
 public product site. The site uses native HTML disclosures and links, with no
@@ -27,6 +27,10 @@ python3 -m http.server 8080 --directory public
 Then open `http://localhost:8080`. The tests do not require Python; they check
 the product copy, metadata, internal links, native disclosures, social card,
 download size and checksum.
+
+The landing page lives at `public/index.html`. The detailed guide for the
+current public release lives at `public/help/index.html`; update its visible
+version boundary and app instructions whenever a new Lumen release ships.
 
 ## Deployment
 
