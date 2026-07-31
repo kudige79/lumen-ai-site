@@ -225,8 +225,10 @@ test("preserves the labelled product sections and shipped changelog", () => {
   assert.match(html, /Local-first by design\. Cloud only by choice\./);
   assert.match(
     html,
-    /images containing little or no readable text are sent in full/,
+    /images containing little or no readable text are sent to the selected provider as a re-encoded copy/,
   );
+  assert.match(html, /up to 300 of them are sent with every document/);
+  assert.doesNotMatch(html, /sent in full/);
   assert.match(html, /No Lumen account/);
   assert.match(html, /PDF · DOCX · XLSX · PPTX · TXT/);
 
@@ -390,6 +392,14 @@ test("publishes a detailed, versioned Lumen 1.1 user guide", () => {
   assert.match(helpHtml, /<meta name="twitter:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
   assert.match(helpHtml, /Lumen 1\.1 · Build 2 · released 16 July 2026/);
   assert.match(helpHtml, /excludes work still in development for Lumen 1\.2/);
+  assert.match(
+    helpHtml,
+    /together with up to 300 of your saved name mappings/,
+  );
+  assert.match(
+    helpHtml,
+    /Cloud photo descriptions send a re-encoded copy of eligible images/,
+  );
   assert.match(html, /<a href="\/help\/">Help<\/a>/);
   assert.match(html, /<a href="\/help\/">User Guide<\/a>/);
   assert.equal(countMatches(html, /href="\/help\/"/g), 2);

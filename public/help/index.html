@@ -130,7 +130,7 @@
             <p class="section-number">02</p>
             <h2 id="first-run-title">Run your first set of files</h2>
             <ol class="instruction-list">
-              <li><div><strong>Prepare the AI model.</strong><p>Local AI is selected by default. On an Apple-silicon Mac with 24 GB+ memory, open <strong>Settings → AI Provider</strong> and start the one-time Phi-4 14B model download of approximately 8.26 GB before first use. On an Intel Mac, configure and enable a cloud provider instead.</p></div></li>
+              <li><div><strong>Prepare the AI model.</strong><p>Local AI is selected by default. On an Apple-silicon Mac with 24 GB+ memory, open <strong>Settings → AI Provider</strong> and start the Phi-4 14B model download of approximately 8.26 GB before first use. On an Intel Mac, configure and enable a cloud provider instead.</p></div></li>
               <li><div><strong>Add files in Drop Zone.</strong><p>Drag in individual files or one or more folders, or use <strong>Choose Folder…</strong> / <strong>Choose Files…</strong>. Multiple folders remain grouped by source.</p></div></li>
               <li><div><strong>Check the queue.</strong><p>Highlight a row and press <kbd>Space</kbd> to open Quick Look, or click its eye button. Press <kbd>Y</kbd> or <kbd>N</kbd> to tick or untick the highlighted row. Tick rows and choose <strong>Remove</strong> to leave them out; <strong>Restore</strong> brings them back.</p></div></li>
               <li><div><strong>Confirm the essentials.</strong><p>At the bottom of Drop Zone, check the active AI model, the <strong>Photo naming</strong> switch and the provider-ready chip. The chip opens Settings when the model or API key needs attention.</p></div></li>
@@ -311,12 +311,12 @@
           <section class="guide-section" id="name-mappings" aria-labelledby="mappings-title">
             <p class="section-number">11</p>
             <h2 id="mappings-title">Maintain Name Mappings</h2>
-            <p><strong>Name Mappings</strong> is Lumen’s on-device name database. A mapping connects a <em>name as found</em> to the canonical spelling used in filenames.</p>
+            <p><strong>Name Mappings</strong> is Lumen’s name database, stored on your Mac. A mapping connects a <em>name as found</em> to the canonical spelling used in filenames.</p>
             <ul>
               <li><strong>Canonical Mappings</strong> connect variations to a preferred spelling, keeping one person’s documents consistent.</li>
               <li>Use <strong>Add Mapping</strong> or <strong>Edit Mapping</strong> to maintain those relationships.</li>
               <li><strong>Permanently Ignored</strong> entries are never proposed as owners. This is useful for third parties who appear in a document but do not own it.</li>
-              <li>Mappings persist between launches and are used in later analyses.</li>
+              <li>Mappings persist between launches and are used in later analyses and are sent with each document when you use a cloud provider (see Privacy and permissions).</li>
             </ul>
           </section>
 
@@ -326,7 +326,7 @@
             <ul class="privacy-list">
               <li><strong>Local by default.</strong><span>Local extraction, OCR and Local AI analysis remain on your Mac.</span></li>
               <li><strong>Cloud is optional.</strong><span>Your own API key connects Lumen directly to the selected provider after a per-provider consent prompt.</span></li>
-              <li><strong>What cloud AI receives.</strong><span>A document’s filename and locally extracted text are normally sent. Claude and OpenAI can also receive PDFs or images for native-file fallback and oversized-PDF upload. Cloud photo descriptions send eligible images.</span></li>
+              <li><strong>What cloud AI receives.</strong><span>A document’s filename and locally extracted text are normally sent, together with up to 300 of your saved name mappings, including documents those people do not appear in. Claude and OpenAI can also receive an original PDF or a re-encoded copy of an image for weak-result fallback, and oversized PDFs through their Files APIs — for a Pages, Numbers or Keynote file, that is the preview PDF embedded in it, where it has one. Cloud photo descriptions send a re-encoded copy of eligible images plus the capture date where recorded, never the original file.</span></li>
               <li><strong>Location has separate consent.</strong><span>Resolved photo location sends embedded GPS coordinates to Apple’s geocoding service, not to the developer.</span></li>
               <li><strong>File access is scoped.</strong><span>Lumen can scan only the files and folders you select or drag in. macOS may ask for folder access again when a rename or revert needs it.</span></li>
               <li><strong>No Lumen account.</strong><span>The app has no developer-operated servers, analytics, advertising or tracking.</span></li>
