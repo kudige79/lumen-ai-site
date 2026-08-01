@@ -268,15 +268,20 @@ test("includes every agreed audit correction", () => {
     html,
     /The Lumen app has no developer-operated servers or account system, and includes no analytics, advertising or tracking\./,
   );
+  const privacySection =
+    html.match(/<section class="section privacy-section"[\s\S]*?<\/section>/i)?.[0] ?? "";
+  const footer = html.match(/<footer>[\s\S]*?<\/footer>/i)?.[0] ?? "";
+
+  assert.doesNotMatch(privacySection, /GitHub Pages/);
   assert.match(
-    html,
-    /This website is hosted by GitHub Pages, which may collect visitor information such as IP addresses/,
+    footer,
+    /Website hosting privacy/,
   );
   assert.match(
-    html,
+    footer,
     /href="https:\/\/docs\.github\.com\/en\/site-policy\/privacy-policies\/github-general-privacy-statement"/,
   );
-  assert.match(html, /Lumen adds no cookies or analytics of its own\./);
+  assert.doesNotMatch(html, /GitHub Pages may collect standard request data/);
 
   assert.match(
     html,
