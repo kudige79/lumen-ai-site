@@ -33,6 +33,10 @@ const [
   ]);
 
 const packageJson = JSON.parse(packageText);
+const releaseAssetUrl =
+  "https://github.com/kudige79/lumen-ai-site/releases/download/v1.2/Lumen-1.2.dmg";
+const publishedChecksum =
+  "52c9742c37c357467cd9489124d7f88b9a5312e077ef18a20a089b2a29839375";
 
 function countMatches(value, pattern) {
   return [...value.matchAll(pattern)].length;
@@ -211,14 +215,20 @@ test("publishes crawler discovery files for the canonical URL", () => {
   assert.match(sitemapText, /<\/urlset>\s*$/);
 });
 
-test("preserves the approved Lumen 1.1 product and model facts", () => {
+test("publishes the approved Lumen 1.2 product and model facts", () => {
   assert.match(html, /Turn messy files into meaningful names\./);
   assert.match(
     html,
     /Lumen is a free, local-first AI file renamer for Mac that proposes clean, consistent filenames for supported documents and opted-in photos\./,
   );
-  assert.match(html, /Download Lumen 1\.1/);
-  assert.match(html, /Download the 20 MB DMG/);
+  assert.match(html, /Download Lumen 1\.2/);
+  assert.match(html, /Download the 19\.6 MB DMG/);
+  assert.match(html, /Lumen 1\.2 · Build 3/);
+  assert.match(
+    html,
+    /19\.6 MB <span aria-hidden="true">·<\/span> macOS 26\.4 or later<span aria-hidden="true">·<\/span> Universal app/,
+  );
+  assert.match(html, /<span>1<\/span> Open Lumen-1\.2\.dmg\./);
   assert.match(html, /macOS 26\.4 or later/);
   assert.match(html, /Apple silicon with 24 GB\+ memory/);
   assert.match(html, /One local model\. Four optional cloud models\./);
@@ -241,16 +251,16 @@ test("preserves the approved Lumen 1.1 product and model facts", () => {
   assert.match(html, /not through the Mac App Store/);
   assert.match(
     html,
-    /Lumen 1\.2 is in development and is not yet available to download\. The current download remains Lumen 1\.1/,
+    /Lumen 1\.2 is the current release, distributed directly as a signed and notarised Developer-ID disk image through GitHub Releases, not through the Mac App Store\./,
   );
-  assert.match(html, /Lumen 1\.2 feature preview/);
+  assert.match(html, /Lumen 1\.2 features/);
   assert.match(
     html,
-    /These features document Lumen 1\.2 while its release is prepared\. The current public download remains Lumen 1\.1\./,
+    /These features are included in the current Lumen 1\.2 release\./,
   );
   assert.match(
     html,
-    /The in-development Lumen 1\.2 also stores local session-recovery snapshots/,
+    /Lumen 1\.2 also stores local session-recovery snapshots/,
   );
   assert.match(
     html,
@@ -265,7 +275,10 @@ test("preserves the approved Lumen 1.1 product and model facts", () => {
     html,
     /After a run, see how many skipped files the AI declined for safety and, for cloud runs, approximate input and output tokens when reported/,
   );
-  assert.doesNotMatch(html, /Download Lumen 1\.2|Lumen-1\.2\.dmg/);
+  assert.doesNotMatch(
+    html,
+    /current (?:public )?download remains Lumen 1\.1|in development|not yet (?:released|available to download)|feature preview/i,
+  );
 });
 
 test("preserves the labelled product sections and shipped changelog", () => {
@@ -306,8 +319,9 @@ test("preserves the labelled product sections and shipped changelog", () => {
   assert.match(html, /datetime="2026-06"/i);
   assert.match(html, /Strengthened rename and reversion handling/);
   assert.match(html, /Current release/);
-  assert.match(html, /In development/);
-  assert.match(html, /Not yet available to download/);
+  assert.match(html, /Previous release/);
+  assert.match(html, /datetime="2026-08-04"/);
+  assert.doesNotMatch(html, /In development|Not yet available to download/);
   assert.match(html, /Names database backup and restore\./);
   assert.match(html, /Session recovery\./);
   assert.match(html, /Crash-safe undo\./);
@@ -315,7 +329,7 @@ test("preserves the labelled product sections and shipped changelog", () => {
 
   const release12Article =
     html.match(
-      /<article class="release-entry release-entry-preview"[\s\S]*?<\/article>/i,
+      /<article class="release-entry" aria-labelledby="release-1-2-title"[\s\S]*?<\/article>/i,
     )?.[0] ?? "";
   const release12Copy =
     release12Article.match(
@@ -457,12 +471,12 @@ test("includes the optional Wise support section", () => {
   assert.match(css, /\.support-card\s*\{/);
 });
 
-test("publishes a detailed Lumen 1.2 guide preview without changing the 1.1 download", () => {
+test("publishes a detailed Lumen 1.2 guide for the current release", () => {
   assert.match(helpHtml, /^<!DOCTYPE html>/i);
   assert.match(helpHtml, /<html lang="en-AU">/i);
   assert.match(
     helpHtml,
-    /<title>Lumen 1\.2 User Guide Preview — Help for the Mac file renamer<\/title>/i,
+    /<title>Lumen 1\.2 User Guide — Help for the Mac file renamer<\/title>/i,
   );
   assert.match(
     helpHtml,
@@ -470,18 +484,21 @@ test("publishes a detailed Lumen 1.2 guide preview without changing the 1.1 down
   );
   assert.match(
     helpHtml,
-    /<meta name="description" content="Preview the Lumen 1\.2 User Guide: names backup, session recovery, multi-select, safe undo, photo naming, cloud AI and troubleshooting\."\s*\/?>/i,
+    /<meta name="description" content="Read the Lumen 1\.2 User Guide: names backup, session recovery, multi-select, safe undo, photo naming, cloud AI and troubleshooting\."\s*\/?>/i,
   );
   assert.match(helpHtml, /<meta name="robots" content="index, follow"\s*\/?>/i);
-  assert.match(helpHtml, /<meta property="og:title" content="Lumen 1\.2 User Guide Preview"\s*\/?>/i);
+  assert.match(helpHtml, /<meta property="og:title" content="Lumen 1\.2 User Guide"\s*\/?>/i);
   assert.match(helpHtml, /<meta property="og:url" content="https:\/\/lumen-ai\.eu\/help\/"\s*\/?>/i);
-  assert.match(helpHtml, /<meta name="twitter:title" content="Lumen 1\.2 User Guide Preview"\s*\/?>/i);
+  assert.match(helpHtml, /<meta name="twitter:title" content="Lumen 1\.2 User Guide"\s*\/?>/i);
   assert.match(helpHtml, /<meta property="og:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
   assert.match(helpHtml, /<meta name="twitter:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
-  assert.match(helpHtml, /Lumen 1\.2 · Build 3 · not yet released/);
-  assert.match(helpHtml, /The current public download remains Lumen 1\.1/);
-  assert.match(helpHtml, /href="\/Lumen-1\.1\.dmg"[^>]*download/);
-  assert.doesNotMatch(helpHtml, /Lumen-1\.2\.dmg|Download 1\.2/);
+  assert.match(helpHtml, /Lumen 1\.2 · Build 3/);
+  assert.match(helpHtml, new RegExp(releaseAssetUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(helpHtml, /Download 1\.2/);
+  assert.doesNotMatch(
+    helpHtml,
+    /User Guide Preview|in development|not yet released|current public download remains Lumen 1\.1|before its DMG is published/i,
+  );
   assert.match(
     helpHtml,
     /together with up to 300 of your saved name mappings/,
@@ -625,11 +642,11 @@ test("publishes the complete 1 August 2026 in-app Privacy Policy on lumen-ai.eu"
   assert.match(privacyHtml, /Effective date: 1 August 2026/);
   assert.match(
     privacyHtml,
-    /complete privacy policy included in Lumen 1\.2, which is currently in development/,
+    /complete privacy policy included in Lumen 1\.2, covering on-device processing/,
   );
-  assert.match(
+  assert.doesNotMatch(
     privacyHtml,
-    /The current public download remains Lumen 1\.1/,
+    /currently in development|The current public download remains Lumen 1\.1/,
   );
   assert.match(
     privacyHtml,
@@ -732,41 +749,54 @@ test("keeps native page behaviour and internal references intact", async () => {
   );
 });
 
-test("ships the approved release artefact and local images", async () => {
+test("preserves the 1.1 artefact and publishes the approved 1.2 release", async () => {
   const [dmg, socialCard] = await Promise.all([
     readFile(new URL("Lumen-1.1.dmg", publicRoot)),
     readFile(new URL("og.png", publicRoot)),
   ]);
 
   assert.equal(dmg.byteLength, 19_913_800);
-  const approvedChecksum =
+  const legacyChecksum =
     "6aa7156364b1a6d99965e744b81e68ef6ca347788ee459bd51e23d6498aecb43";
-  assert.equal(createHash("sha256").update(dmg).digest("hex"), approvedChecksum);
-  assert.match(html, new RegExp(approvedChecksum));
+  assert.equal(createHash("sha256").update(dmg).digest("hex"), legacyChecksum);
+  assert.match(html, new RegExp(publishedChecksum));
+  assert.doesNotMatch(html, new RegExp(legacyChecksum));
 
   const downloadLinks = [
     ...html.matchAll(
-      /<a\b[^>]*href="\/Lumen-1\.1\.dmg"[^>]*\bdownload(?:>|="")/g,
+      /<a\b[^>]*href="https:\/\/github\.com\/kudige79\/lumen-ai-site\/releases\/download\/v1\.2\/Lumen-1\.2\.dmg"[^>]*\bdownload(?:>|="")/g,
     ),
   ];
   assert.equal(downloadLinks.length, 4);
 
-  const allSiteHtml = [html, helpHtml, privacyHtml].join("\n");
+  const allSiteHtml = [html, helpHtml, privacyHtml, notFoundHtml].join("\n");
   assert.doesNotMatch(
     allSiteHtml,
-    /Lumen-1\.2\.dmg|Download(?: Lumen)? 1\.2/,
+    /href="\/Lumen-1\.1\.dmg"|Download(?: Lumen)? 1\.1|current (?:public )?download remains Lumen 1\.1/i,
   );
   assert.equal(
     countMatches(
       allSiteHtml,
-      /href="\/Lumen-1\.1\.dmg"[^>]*\bdownload(?:>|="")/g,
+      /href="https:\/\/github\.com\/kudige79\/lumen-ai-site\/releases\/download\/v1\.2\/Lumen-1\.2\.dmg"[^>]*\bdownload(?:>|="")/g,
     ),
     8,
   );
+  const allDownloadAnchors = [
+    ...allSiteHtml.matchAll(
+      /<a\b[^>]*\bdownload(?:\s*=\s*"")?[^>]*>[\s\S]*?<\/a>/g,
+    ),
+  ];
+  assert.equal(allDownloadAnchors.length, 8);
+  for (const anchor of allDownloadAnchors) {
+    assert.match(
+      anchor[0],
+      /href="https:\/\/github\.com\/kudige79\/lumen-ai-site\/releases\/download\/v1\.2\/Lumen-1\.2\.dmg"/,
+    );
+  }
   for (const page of [html, helpHtml, privacyHtml]) {
     assert.match(
       page,
-      /<a class="button button-small" href="\/Lumen-1\.1\.dmg" download>Download 1\.1<\/a>/,
+      /<a class="button button-small" href="https:\/\/github\.com\/kudige79\/lumen-ai-site\/releases\/download\/v1\.2\/Lumen-1\.2\.dmg" download>Download 1\.2<\/a>/,
     );
   }
 
