@@ -9,6 +9,7 @@ const publicRoot = new URL("public/", root);
 const [
   html,
   helpHtml,
+  privacyHtml,
   helpCss,
   notFoundHtml,
   css,
@@ -20,6 +21,7 @@ const [
 ] = await Promise.all([
     readFile(new URL("index.html", publicRoot), "utf8"),
     readFile(new URL("help/index.html", publicRoot), "utf8"),
+    readFile(new URL("privacy/index.html", publicRoot), "utf8"),
     readFile(new URL("help/help.css", publicRoot), "utf8"),
     readFile(new URL("404.html", publicRoot), "utf8"),
     readFile(new URL("styles.css", publicRoot), "utf8"),
@@ -36,6 +38,24 @@ function countMatches(value, pattern) {
   return [...value.matchAll(pattern)].length;
 }
 
+function normalisePolicyArticle(value) {
+  return value
+    .replace(/<p class="section-number">[\s\S]*?<\/p>/gi, "")
+    .replace(/<br\s*\/?\s*>/gi, "\n")
+    .replace(/<\/(?:p|h2|h3|li)>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&quot;/g, '"')
+    .replace(/&#(?:39|x27);/gi, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .normalize("NFC")
+    .split(/\n/)
+    .map((line) => line.trim().replace(/\s+/g, " "))
+    .filter(Boolean)
+    .join("\n");
+}
+
 test("publishes a complete zero-JavaScript landing page", async () => {
   assert.match(html, /^<!DOCTYPE html>/i);
   assert.match(html, /<html lang="en-AU">/i);
@@ -45,12 +65,18 @@ test("publishes a complete zero-JavaScript landing page", async () => {
   );
   assert.match(html, /<link rel="stylesheet" href="\/styles\.css">/i);
   assert.doesNotMatch(html, /<script\b/i);
+  assert.doesNotMatch(helpHtml, /<script\b/i);
+  assert.doesNotMatch(privacyHtml, /<script\b/i);
   assert.doesNotMatch(html, /\/_next\//i);
   assert.doesNotMatch(html, /__next_f|javascript:/i);
   assert.doesNotMatch(html, /\son[a-z]+=/i);
   assert.doesNotMatch(css, /@import|--theme\(/i);
 
   const publishedFiles = await readdir(publicRoot, { recursive: true });
+  assert.deepEqual(
+    publishedFiles.filter((file) => /\.html$/i.test(file)).sort(),
+    ["404.html", "help/index.html", "index.html", "privacy/index.html"],
+  );
   assert.equal(
     publishedFiles.filter((file) => /\.(?:c|m)?js$/i.test(file)).length,
     0,
@@ -176,6 +202,7 @@ test("publishes crawler discovery files for the canonical URL", () => {
   assert.deepEqual(locations, [
     "https://lumen-ai.eu/",
     "https://lumen-ai.eu/help/",
+    "https://lumen-ai.eu/privacy/",
   ]);
   assert.doesNotMatch(
     sitemapText,
@@ -212,7 +239,33 @@ test("preserves the approved Lumen 1.1 product and model facts", () => {
   );
   assert.match(html, /optional cloud photo descriptions/);
   assert.match(html, /not through the Mac App Store/);
-  assert.doesNotMatch(html, /Lumen 1\.2/);
+  assert.match(
+    html,
+    /Lumen 1\.2 is in development and is not yet available to download\. The current download remains Lumen 1\.1/,
+  );
+  assert.match(html, /Lumen 1\.2 feature preview/);
+  assert.match(
+    html,
+    /These features document Lumen 1\.2 while its release is prepared\. The current public download remains Lumen 1\.1\./,
+  );
+  assert.match(
+    html,
+    /The in-development Lumen 1\.2 also stores local session-recovery snapshots/,
+  );
+  assert.match(
+    html,
+    /return them to their original tab until they are renamed or a new processing run starts/,
+  );
+  assert.match(
+    html,
+    /Uses whichever selected Label, location and capture-date fields are available/,
+  );
+  assert.match(html, /Test a provider key without sending document data/);
+  assert.match(
+    html,
+    /After a run, see how many skipped files the AI declined for safety and, for cloud runs, approximate input and output tokens when reported/,
+  );
+  assert.doesNotMatch(html, /Download Lumen 1\.2|Lumen-1\.2\.dmg/);
 });
 
 test("preserves the labelled product sections and shipped changelog", () => {
@@ -220,7 +273,7 @@ test("preserves the labelled product sections and shipped changelog", () => {
   assert.match(html, /id="models"[^>]+aria-labelledby="models-title"/);
   assert.match(
     html,
-    /href="https:\/\/kudige79\.github\.io\/lumen-privacy\/"/,
+    /href="\/privacy\/"/,
   );
   assert.match(html, /Local-first by design\. Cloud only by choice\./);
   assert.match(
@@ -239,6 +292,10 @@ test("preserves the labelled product sections and shipped changelog", () => {
   );
   assert.match(
     html,
+    /article[^>]+aria-labelledby="release-1-2-title"/i,
+  );
+  assert.match(
+    html,
     /article[^>]+aria-labelledby="release-1-1-title"/i,
   );
   assert.match(
@@ -249,10 +306,36 @@ test("preserves the labelled product sections and shipped changelog", () => {
   assert.match(html, /datetime="2026-06"/i);
   assert.match(html, /Strengthened rename and reversion handling/);
   assert.match(html, /Current release/);
+  assert.match(html, /In development/);
+  assert.match(html, /Not yet available to download/);
+  assert.match(html, /Names database backup and restore\./);
+  assert.match(html, /Session recovery\./);
+  assert.match(html, /Crash-safe undo\./);
+  assert.match(html, /Name-database safety/);
 
+  const release12Article =
+    html.match(
+      /<article class="release-entry release-entry-preview"[\s\S]*?<\/article>/i,
+    )?.[0] ?? "";
+  const release12Copy =
+    release12Article.match(
+      /<div class="release-groups">([\s\S]*?)<\/div>/i,
+    )?.[1] ?? "";
+  assert.notEqual(release12Copy, "");
+  // Normalised CHANGELOG_1_2.md lines 18–149 at app commit 43e19f5,
+  // with the five code-truth corrections recorded in WEBSITE_12_REVIEW.md.
+  assert.equal(
+    createHash("sha256")
+      .update(normalisePolicyArticle(release12Copy.replace(/h4/g, "h3")))
+      .digest("hex"),
+    "318ae61c2e238b044e0ed08c98e16e35f67d42745115d3cd5b253a3f195ed2ae",
+  );
+
+  const version12Index = html.indexOf('id="release-1-2-title"');
   const version11Index = html.indexOf('id="release-1-1-title"');
   const version10Index = html.indexOf('id="release-1-0-title"');
-  assert.ok(version11Index >= 0 && version10Index >= 0);
+  assert.ok(version12Index >= 0 && version11Index >= 0 && version10Index >= 0);
+  assert.ok(version12Index < version11Index);
   assert.ok(version11Index < version10Index);
 });
 
@@ -374,12 +457,12 @@ test("includes the optional Wise support section", () => {
   assert.match(css, /\.support-card\s*\{/);
 });
 
-test("publishes a detailed, versioned Lumen 1.1 user guide", () => {
+test("publishes a detailed Lumen 1.2 guide preview without changing the 1.1 download", () => {
   assert.match(helpHtml, /^<!DOCTYPE html>/i);
   assert.match(helpHtml, /<html lang="en-AU">/i);
   assert.match(
     helpHtml,
-    /<title>Lumen 1\.1 User Guide — Help for the Mac file renamer<\/title>/i,
+    /<title>Lumen 1\.2 User Guide Preview — Help for the Mac file renamer<\/title>/i,
   );
   assert.match(
     helpHtml,
@@ -387,16 +470,18 @@ test("publishes a detailed, versioned Lumen 1.1 user guide", () => {
   );
   assert.match(
     helpHtml,
-    /<meta name="description" content="Learn how to use Lumen 1\.1: choose an AI model, process documents and photos, review names, batch rename files, undo changes and troubleshoot problems\."\s*\/?>/i,
+    /<meta name="description" content="Preview the Lumen 1\.2 User Guide: names backup, session recovery, multi-select, safe undo, photo naming, cloud AI and troubleshooting\."\s*\/?>/i,
   );
   assert.match(helpHtml, /<meta name="robots" content="index, follow"\s*\/?>/i);
-  assert.match(helpHtml, /<meta property="og:title" content="Lumen 1\.1 User Guide"\s*\/?>/i);
+  assert.match(helpHtml, /<meta property="og:title" content="Lumen 1\.2 User Guide Preview"\s*\/?>/i);
   assert.match(helpHtml, /<meta property="og:url" content="https:\/\/lumen-ai\.eu\/help\/"\s*\/?>/i);
-  assert.match(helpHtml, /<meta name="twitter:title" content="Lumen 1\.1 User Guide"\s*\/?>/i);
+  assert.match(helpHtml, /<meta name="twitter:title" content="Lumen 1\.2 User Guide Preview"\s*\/?>/i);
   assert.match(helpHtml, /<meta property="og:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
   assert.match(helpHtml, /<meta name="twitter:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
-  assert.match(helpHtml, /Lumen 1\.1 · Build 2 · released 16 July 2026/);
-  assert.match(helpHtml, /excludes work still in development for Lumen 1\.2/);
+  assert.match(helpHtml, /Lumen 1\.2 · Build 3 · not yet released/);
+  assert.match(helpHtml, /The current public download remains Lumen 1\.1/);
+  assert.match(helpHtml, /href="\/Lumen-1\.1\.dmg"[^>]*download/);
+  assert.doesNotMatch(helpHtml, /Lumen-1\.2\.dmg|Download 1\.2/);
   assert.match(
     helpHtml,
     /together with up to 300 of your saved name mappings/,
@@ -417,6 +502,7 @@ test("publishes a detailed, versioned Lumen 1.1 user guide", () => {
     "photo-naming",
     "name-review",
     "results",
+    "session-recovery",
     "unprocessed",
     "batch-rename",
     "revert",
@@ -432,22 +518,45 @@ test("publishes a detailed, versioned Lumen 1.1 user guide", () => {
   }
 
   assert.match(helpHtml, /Settings → AI Provider/);
+  assert.match(
+    helpHtml,
+    /short authentication check using that provider’s key and no document data/,
+  );
+  assert.match(
+    helpHtml,
+    /how many skipped files the AI declined for safety and, for cloud runs, approximate input and output tokens when reported/,
+  );
   assert.match(helpHtml, /Phi-4 14B model download of approximately 8\.26 GB/);
   assert.match(helpHtml, /Try Selected with \[provider\]/);
   assert.match(helpHtml, /Send to Batch Rename/);
-  assert.match(helpHtml, /all visible rows when none are ticked/);
-  assert.match(
-    helpHtml,
-    /In Lumen 1\.1, (?:this|Unprocessed) is the only AI workflow that sends rows into Batch Rename/,
-  );
+  assert.match(helpHtml, /Return to Results/);
+  assert.match(helpHtml, /Return to Unprocessed/);
+  assert.match(helpHtml, /Restored document proposals are reconciled with your current Name Mappings/);
   assert.match(helpHtml, /Rules run in this order/);
   assert.match(helpHtml, /New proposals arrive approved \(ticked\) by default/);
   assert.match(helpHtml, /mark for removal in Drop Zone/);
   assert.match(helpHtml, /Counters follow the order currently shown in the preview/);
-  assert.match(helpHtml, /<kbd>Y<\/kbd> to include it/);
+  assert.match(helpHtml, /every highlighted row/);
   assert.match(helpHtml, /Export Share-Safe Log/);
-  assert.doesNotMatch(helpHtml, /Return to Results|Return to Unprocessed|Names Backup/);
-  assert.doesNotMatch(helpHtml, /⌘-click|⇧-click|⌘A/);
+  assert.match(helpHtml, /Names Backup/);
+  assert.match(helpHtml, /those tokens retain no original file extension/);
+  assert.match(helpHtml, /or raw coordinates/);
+  assert.match(helpHtml, /every visible row when none are ticked/);
+  assert.match(
+    helpHtml,
+    /A later run replaces the saved session once it produces recoverable results/,
+  );
+  assert.match(
+    helpHtml,
+    /Up to 300 saved mappings are sent with each document request/,
+  );
+  assert.doesNotMatch(
+    helpHtml,
+    /Mappings persist between launches and are used in later analyses and are sent with each document/,
+  );
+  assert.match(helpHtml, /Description, Place, Date or Label is left out when that value is unavailable or blank/);
+  assert.match(helpHtml, /Apple’s geocoding service/);
+  assert.doesNotMatch(helpHtml, /Apple Maps/);
   assert.doesNotMatch(helpHtml, /<script\b|\/_next\/|javascript:|\son[a-z]+=/i);
   assert.doesNotMatch(helpCss, /@import|--theme\(/i);
 });
@@ -482,7 +591,7 @@ test("keeps help-page references, labels and local assets intact", async () => {
   const disclosures = [
     ...helpHtml.matchAll(/<details\b[\s\S]*?<\/details>/g),
   ];
-  assert.equal(disclosures.length, 7);
+  assert.equal(disclosures.length, 8);
   for (const disclosure of disclosures) {
     assert.match(disclosure[0], /<summary>[\s\S]*?<\/summary>/);
   }
@@ -503,6 +612,83 @@ test("keeps help-page references, labels and local assets intact", async () => {
     css,
     /@media \(max-width: 840px\)[\s\S]*?\.site-header \.desktop-nav\s*\{[^}]*flex-wrap: wrap;/,
   );
+});
+
+test("publishes the complete 1 August 2026 in-app Privacy Policy on lumen-ai.eu", async () => {
+  assert.match(privacyHtml, /^<!DOCTYPE html>/i);
+  assert.match(privacyHtml, /<html lang="en-AU">/i);
+  assert.match(privacyHtml, /<title>Privacy Policy — Lumen for Mac<\/title>/i);
+  assert.match(
+    privacyHtml,
+    /<link rel="canonical" href="https:\/\/lumen-ai\.eu\/privacy\/"\s*\/?>/i,
+  );
+  assert.match(privacyHtml, /Effective date: 1 August 2026/);
+  assert.match(
+    privacyHtml,
+    /complete privacy policy included in Lumen 1\.2, which is currently in development/,
+  );
+  assert.match(
+    privacyHtml,
+    /The current public download remains Lumen 1\.1/,
+  );
+  assert.match(
+    privacyHtml,
+    /A cleanup entry for an upload with a saved provider identifier holds that opaque identifier and may also hold a non-reversible cryptographic fingerprint of the credential used for the upload/,
+  );
+  assert.match(
+    privacyHtml,
+    /It cannot be used to locate or delete a provider-side copy, and it holds no credential, credential fingerprint, filename, or document content/,
+  );
+  assert.match(
+    privacyHtml,
+    /A snapshot holds no credential, credential fingerprint, or document content/,
+  );
+  assert.match(
+    privacyHtml,
+    /may remain in the Application's container indefinitely/,
+  );
+  assert.match(
+    privacyHtml,
+    /does not transmit snapshot files or include them in the share-safe diagnostic-log export/,
+  );
+
+  const article =
+    privacyHtml.match(/<article class="guide-copy">([\s\S]*?)<\/article>/i)?.[1] ?? "";
+  assert.notEqual(article, "");
+  assert.equal(
+    createHash("sha256").update(normalisePolicyArticle(article)).digest("hex"),
+    "0dae5a4e1b52866209052a6862974b41cf147fb57d3e79b2de3843100e2c2378",
+  );
+  assert.equal(
+    countMatches(article, /<section class="guide-section"/g),
+    11,
+  );
+
+  const ids = [...privacyHtml.matchAll(/\bid="([^"]+)"/g)].map(
+    (match) => match[1],
+  );
+  assert.equal(new Set(ids).size, ids.length, "Privacy HTML IDs must be unique");
+  const idSet = new Set(ids);
+  for (const match of privacyHtml.matchAll(/\bhref="#([^"]+)"/g)) {
+    assert.ok(idSet.has(match[1]), `Missing privacy fragment target #${match[1]}`);
+  }
+  for (const match of privacyHtml.matchAll(/\baria-labelledby="([^"]+)"/g)) {
+    for (const id of match[1].split(/\s+/)) {
+      assert.ok(idSet.has(id), `Missing privacy aria-labelledby target #${id}`);
+    }
+  }
+
+  const localAssets = new Set(
+    [...privacyHtml.matchAll(/\b(?:href|src)="\/([^"#?]+)"/g)].map(
+      (match) => match[1],
+    ),
+  );
+  await Promise.all(
+    [...localAssets].map((path) => access(new URL(path, publicRoot))),
+  );
+  assert.doesNotMatch(privacyHtml, /kudige79\.github\.io\/lumen-privacy/);
+  assert.doesNotMatch(privacyHtml, /Apple Maps/);
+  assert.doesNotMatch(privacyHtml, /<script\b|\/_next\/|javascript:|\son[a-z]+=/i);
 });
 
 test("keeps native page behaviour and internal references intact", async () => {
@@ -565,9 +751,33 @@ test("ships the approved release artefact and local images", async () => {
   ];
   assert.equal(downloadLinks.length, 4);
 
+  const allSiteHtml = [html, helpHtml, privacyHtml].join("\n");
+  assert.doesNotMatch(
+    allSiteHtml,
+    /Lumen-1\.2\.dmg|Download(?: Lumen)? 1\.2/,
+  );
+  assert.equal(
+    countMatches(
+      allSiteHtml,
+      /href="\/Lumen-1\.1\.dmg"[^>]*\bdownload(?:>|="")/g,
+    ),
+    8,
+  );
+  for (const page of [html, helpHtml, privacyHtml]) {
+    assert.match(
+      page,
+      /<a class="button button-small" href="\/Lumen-1\.1\.dmg" download>Download 1\.1<\/a>/,
+    );
+  }
+
   assert.equal(socialCard.subarray(1, 4).toString("ascii"), "PNG");
+  assert.equal(
+    createHash("sha256").update(socialCard).digest("hex"),
+    "85402b537b615a45a7ba5e0fdd0370010662d776756b0ddca554b22b1f1a92c0",
+  );
   assert.equal(socialCard.readUInt32BE(16), 1200);
   assert.equal(socialCard.readUInt32BE(20), 630);
+  assert.ok(socialCard.byteLength < 850_000);
 
   await Promise.all([
     access(new URL("lumen-icon.png", publicRoot)),

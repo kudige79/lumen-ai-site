@@ -28,9 +28,12 @@ Then open `http://localhost:8080`. The tests do not require Python; they check
 the product copy, metadata, internal links, native disclosures, social card,
 download size and checksum.
 
-The landing page lives at `public/index.html`. The detailed guide for the
-current public release lives at `public/help/index.html`; update its visible
-version boundary and app instructions whenever a new Lumen release ships.
+The landing page lives at `public/index.html`. The detailed Lumen 1.2 guide
+preview lives at `public/help/index.html`, while every download link continues
+to identify and serve the current Lumen 1.1 release. The full in-site Privacy
+Policy lives at `public/privacy/index.html` and mirrors the policy compiled into
+the app. Keep each page's status boundary explicit whenever release copy moves
+ahead of the downloadable DMG.
 
 ## Deployment
 

@@ -44,7 +44,7 @@
         <nav class="desktop-nav" aria-label="Primary navigation">
           <a href="#features">Features</a><a href="#models">Models</a><a href="/help/">Help</a><a href="#privacy">Privacy</a><a href="#requirements">Requirements</a>
         </nav>
-        <a class="button button-small" href="/Lumen-1.1.dmg" download>Download</a>
+        <a class="button button-small" href="/Lumen-1.1.dmg" download>Download 1.1</a>
       </div>
     </header>
     <main id="main" tabindex="-1">
@@ -205,14 +205,14 @@
           <div class="section-heading split-heading">
             <div>
               <p class="eyebrow">
-                More than an AI rename button
+                Lumen 1.2 feature preview
               </p>
               <h2 id="features-title">
                 Built for the decisions around the name.
               </h2>
             </div>
             <p>
-              Handle everyday documents, photo collections and rule-based clean-ups without surrendering control of your files.
+              These features document Lumen 1.2 while its release is prepared. The current public download remains Lumen 1.1.
             </p>
           </div>
           <div class="feature-grid">
@@ -231,16 +231,25 @@
                 Your choice of provider
               </h3>
               <p>
-                For difficult files or visual photo descriptions, optionally use your own Claude, OpenAI, Gemini or xAI API key after a clear consent prompt.
+                For difficult files or cloud-only visual photo descriptions, use your own Claude, OpenAI, Gemini or xAI API key after a clear consent prompt. Test a provider key without sending document data.
+              </p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-mark" aria-hidden="true">PH</span>
+              <h3>
+                Flexible photo names
+              </h3>
+              <p>
+                Choose and reorder Description, Place, Date and an optional Label. Description is cloud-only, and any unavailable or unused field is left out.
               </p>
             </article>
             <article class="feature-card">
               <span class="feature-mark" aria-hidden="true">OK</span>
               <h3>
-                Nothing changes unseen
+                Review every change
               </h3>
               <p>
-                Compare every original and proposed filename, inspect the notes, then decide exactly what gets renamed.
+                Compare original and proposed names, then use ⌘-click, ⇧-click or ⌘A to highlight a set. Y/N changes the highlighted rows; ticks still decide what runs.
               </p>
             </article>
             <article class="feature-card">
@@ -249,25 +258,43 @@
                 Powerful batch tools
               </h3>
               <p>
-                Find and replace with regular expressions, add prefixes or counters, change case and catch conflicts live.
+                Send Results or Unprocessed rows into Batch Rename, apply counters and rules, and return them to their original tab until they are renamed or a new processing run starts.
               </p>
             </article>
             <article class="feature-card">
               <span class="feature-mark" aria-hidden="true">ID</span>
               <h3>
-                Names that stay consistent
+                Names database backup
               </h3>
               <p>
-                Map name variations once and Lumen remembers the canonical form for later documents.
+                Map name variations once, then export or restore the mappings, ignored names and naming schema as one validated backup.
+              </p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-mark" aria-hidden="true">SR</span>
+              <h3>
+                Session recovery
+              </h3>
+              <p>
+                Lumen can offer to restore saved proposals, approvals, hand edits, photo numbering, Name Review and sent-to-Batch rows after a crash or quit. Restored document proposals are reconciled with your current name mappings.
               </p>
             </article>
             <article class="feature-card">
               <span class="feature-mark" aria-hidden="true">RV</span>
               <h3>
-                Undo built in
+                Crash-safe undo
               </h3>
               <p>
-                Review rename history and restore eligible files when they remain accessible and their previous names are available.
+                Rename history restores eligible files, while per-file recovery records help repair an interrupted revert when Revert Renames is revisited.
+              </p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-mark" aria-hidden="true">LOG</span>
+              <h3>
+                Clearer diagnostics
+              </h3>
+              <p>
+                After a run, see how many skipped files the AI declined for safety and, for cloud runs, approximate input and output tokens when reported. Share-safe log export omits extracted content and replaces file, folder and path names with extensionless anonymous tokens.
               </p>
             </article>
           </div>
@@ -299,7 +326,7 @@
           <div class="section-heading split-heading">
             <div>
               <p class="eyebrow">
-                Models in Lumen 1.1
+                Supported models
               </p>
               <h2 id="models-title">
                 One local model. Four optional cloud models.
@@ -345,7 +372,7 @@
                   Photos
                 </dt>
                 <dd>
-                  Uses available capture date and optional location metadata; it does not generate a visual description. Resolving coordinates into a place name can contact Apple’s geocoding service after separate consent.
+                  Uses whichever selected Label, location and capture-date fields are available; it does not generate a visual description. Resolved location can contact Apple’s geocoding service after separate consent.
                 </dd>
               </div>
             </dl>
@@ -481,7 +508,10 @@
             <p>
               With cloud photo naming enabled, images containing little or no readable text are sent to the selected provider as a re-encoded copy, not as the original file. If you use Resolved photo location, Lumen separately asks before sending embedded GPS coordinates to Apple’s geocoding service for a place-name lookup.
             </p>
-            <a class="text-link" href="https://kudige79.github.io/lumen-privacy/">Read the full Privacy Policy <span aria-hidden="true">↗</span></a>
+            <p>
+              Lumen stores operational records inside its sandboxed container. The in-development Lumen 1.2 also stores local session-recovery snapshots that can include filenames, paths, proposed names, extracted fields and review state, but contain no API credentials or document content and are never transmitted. The full policy explains their lifecycle and the records used to clean up provider uploads.
+            </p>
+            <a class="text-link" href="/privacy/">Read the full Privacy Policy <span aria-hidden="true">→</span></a>
           </div>
           <div class="privacy-card">
             <div class="shield" aria-hidden="true">
@@ -499,6 +529,9 @@
               </li>
               <li>
                 <strong>Sandboxed file access</strong><span>Lumen scans only locations you select.</span>
+              </li>
+              <li>
+                <strong>Local session recovery</strong><span>Review work is saved on your Mac and can be restored after an interruption.</span>
               </li>
             </ul>
           </div>
@@ -586,10 +619,88 @@
               </h2>
             </div>
             <p>
-              Lumen is distributed directly as a signed and notarised Developer-ID disk image, not through the Mac App Store. Development work appears here only after it ships.
+              Lumen 1.2 is in development and is not yet available to download. The current download remains Lumen 1.1, distributed directly as a signed and notarised Developer-ID disk image, not through the Mac App Store.
             </p>
           </div>
           <ol class="release-list" role="list">
+            <li>
+              <article class="release-entry release-entry-preview" aria-labelledby="release-1-2-title">
+                <div class="release-meta">
+                  <span class="release-status release-status-preview">In development</span><span class="release-delivery">Not yet available to download</span>
+                </div>
+                <div class="release-copy">
+                  <h3 id="release-1-2-title">
+                    Lumen 1.2
+                  </h3>
+                  <div class="release-groups">
+                    <section class="release-group" aria-labelledby="release-1-2-new">
+                      <h4 id="release-1-2-new">New in 1.2</h4>
+                      <ul class="release-highlights">
+                        <li><strong>Names database backup and restore.</strong> Settings → Advanced → Names Backup exports your name mappings, ignored names, and naming schema to a single file, and imports one back — validated end-to-end before anything changes, with a safety copy taken first. Merge with existing names or replace all.</li>
+                        <li><strong>Send files between tabs.</strong> Results can send ticked, resolved files to Batch Rename with suggested or original names; Unprocessed can send ticked files, or all visible files when none are ticked. Sent rows can be returned to their source tab until they are renamed or a new processing run starts.</li>
+                        <li><strong>Session recovery.</strong> If Lumen quits before you rename — after a crash, restart or ordinary quit — the next launch can offer to restore completed results and review state: saved proposals, approvals, hand edits, photo numbering and the Name Review queue; rows previously sent to Batch Rename return to their source tabs.</li>
+                        <li><strong>Crash-safe undo.</strong> Reverting renames now keeps a per-file recovery record as it works. If the app is interrupted mid-revert, Lumen tries to apply the recorded recovery information on the next visit to Revert Renames — and when an external log is reopened — then reports anything that still needs attention.</li>
+                        <li><strong>Multi-select across the working lists.</strong> Highlight several rows with ⌘-click, ⇧-click, or ⌘A in Drop Zone, Results, Unprocessed, and Batch Rename — and Y/N ticks or unticks them all at once.</li>
+                      </ul>
+                    </section>
+                    <section class="release-group" aria-labelledby="release-1-2-honest">
+                      <h4 id="release-1-2-honest">Clearer and more honest</h4>
+                      <ul class="release-highlights">
+                        <li><strong>Privacy disclosures corrected.</strong> Every statement about what leaves your Mac was re-audited against the code and corrected — including that the original filename, your known-name mappings, and a photo's capture date accompany cloud requests, and removing claims about content that is never sent. Because the wording changed, existing users are shown the corrected disclosure once per provider before the next cloud use. The privacy policy and this website were updated to match.</li>
+                        <li><strong>Truthful messages throughout.</strong> Failed saves in Name Mappings now say exactly which file failed and keep your typed values on screen; the Progress tab's counters stay honest when files are sent away or trashed mid-run; cloud truncation errors are reported clearly instead of as a generic failure; the in-app User Guide was expanded and corrected to match the app's real behaviour.</li>
+                      </ul>
+                    </section>
+                    <section class="release-group" aria-labelledby="release-1-2-fixed">
+                      <h4 id="release-1-2-fixed">Fixed</h4>
+                      <ul class="release-highlights">
+                        <li>Keyboard and context-menu actions no longer act on an arbitrary row when several are highlighted (including one destructive case: Move to Trash).</li>
+                        <li>The Batch Rename working set survives switching tabs.</li>
+                        <li>A fast double-click on "Try with…" could analyse the same file twice and land a duplicate row.</li>
+                        <li>Renamed files can be re-checked and renamed again without a restart.</li>
+                        <li>A FIFO, symbolic link, or other special file can no longer hang the app.</li>
+                        <li>Switching providers can no longer wipe a stored API key.</li>
+                        <li>Reverting: importing a log no longer mistakes an I/O error for a corrupt file, and case-only renames revert correctly.</li>
+                        <li>Name Review's retry can no longer erode the names-database safety copy; cross-set name edits no longer leave case-variant residue.</li>
+                        <li>Settings name counts refresh immediately after Name Mappings edits.</li>
+                        <li>CSV exports neutralise spreadsheet formula injection.</li>
+                        <li>The completion message no longer tells you to note a rename manually when that rename was in fact saved to the undo log.</li>
+                        <li>Photo-naming settings and Help now list the real set of name fields — the optional Label was missing from the descriptions.</li>
+                        <li>Each queued image now carries the exact photo permission and location setting it was created with — what the consent dialog described is exactly what can be sent. Changing either setting mid-run affects your next run or re-check, never work already queued, and after a crash recovery Lumen follows your current setting instead of an old saved one.</li>
+                        <li>Closing the window and reopening from the Dock now returns you to the same session instead of an empty window with your run still going invisibly.</li>
+                        <li>Restoring a saved session now reconciles eligible document proposals with name mappings added in the meantime, while preserving hand-edited filenames.</li>
+                        <li>Filenames can no longer keep invisible line separators that some documents carry, including in the file extension.</li>
+                        <li>The share-safe log export no longer keeps the original file extension, and a deliberately odd file or folder name can no longer expose text the export is meant to hide.</li>
+                      </ul>
+                    </section>
+                    <section class="release-group" aria-labelledby="release-1-2-bonnet">
+                      <h4 id="release-1-2-bonnet">Under the bonnet</h4>
+                      <ul class="release-highlights">
+                        <li>The names database is now served by one shared, gate-checked file module (identical behaviour, mechanically enforced).</li>
+                        <li>Revert-status writes are journalled with the same crash-safety as rename logs; every journal has a terminal disposition — nothing can nag forever.</li>
+                        <li>Undo logs are now flushed to disk before their temporary recovery records are removed, and recovery refuses a corrupt undo record outright instead of silently dropping it — your rename history survives a power cut or a damaged file rather than being quietly thinned.</li>
+                        <li>Debug logs rotate at 50 MB; photo-caption requests are now logged like every other analyser call; share-safe export hardened further.</li>
+                      </ul>
+                    </section>
+                    <section class="release-group" aria-labelledby="release-1-2-upload">
+                      <h4 id="release-1-2-upload">Upload safety (Claude)</h4>
+                      <p>When a large PDF has to be uploaded to Claude for analysis, Lumen now records that it is about to send it — before any bytes leave your Mac. If the app is interrupted at exactly the wrong moment, so that the upload may have arrived but Lumen never learned its file identifier, the next launch shows a plain notice explaining that a copy may exist at the provider and that Lumen cannot delete it automatically. The notice is informational and dismissable; nothing about your local files changes.</p>
+                    </section>
+                    <section class="release-group" aria-labelledby="release-1-2-privacy">
+                      <h4 id="release-1-2-privacy">Privacy policy</h4>
+                      <p>The policy now describes the session-recovery snapshot introduced by crash recovery: what it holds, when it is replaced or removed, that a snapshot the app cannot read (or that a different app version wrote) may remain in the app's container, and that snapshots are never transmitted or included in the share-safe log export. Settings now names Apple's geocoding service consistently with the rest of the app.</p>
+                    </section>
+                    <section class="release-group" aria-labelledby="release-1-2-name-safety">
+                      <h4 id="release-1-2-name-safety">Name-database safety</h4>
+                      <p>Names now go through one safety check wherever they enter Lumen — imports, the Name Mappings tab, and Name Review. Line breaks, control characters, text-direction overrides and byte-order marks are refused, because a name carrying them could smuggle instructions into the request Lumen sends the AI with every document. Names in Indic, Persian, Arabic and other scripts are unaffected: the joiners and direction marks those languages need are explicitly allowed, as are tabs and ordinary punctuation. If a name already stored on your Mac contains one of the refused characters, the affected rows are flagged in Name Mappings with a Select Affected Rows button so you can find and remove them, and until then the names Lumen sends are escaped so they cannot read as instructions. A detected name that cannot be added safely no longer blocks the rest of your review — it holds its own file back from Execute and tells you to edit that filename or untick the file.</p>
+                    </section>
+                    <section class="release-group" aria-labelledby="release-1-2-undo">
+                      <h4 id="release-1-2-undo">Undo reliability</h4>
+                      <p>The temporary record Lumen keeps while renaming is now transactional: if writing an entry fails and the rename is put back, the partial bytes are removed, so a rename that was undone can never reappear in Revert Renames and point at the wrong file. If that repair itself fails, Lumen keeps every earlier rename's evidence rather than discarding the whole batch, and says so plainly instead of promising a recovery it cannot make. Recovery folders that cannot be used are listed with a Show in Finder button and honest guidance on whether refreshing will help.</p>
+                    </section>
+                  </div>
+                </div>
+              </article>
+            </li>
             <li>
               <article class="release-entry" aria-labelledby="release-1-1-title">
                 <div class="release-meta">
@@ -747,7 +858,7 @@
           Local-first file renaming for macOS.
         </p>
         <div class="footer-links">
-          <a href="/help/">User Guide</a><a href="#changelog">Changelog</a><a href="#support">Support</a><a href="https://kudige79.github.io/lumen-privacy/">Privacy</a><a href="mailto:kudige@icloud.com?subject=Lumen%20feedback%20or%20support">Contact</a><a href="/Lumen-1.1.dmg" download>Download 1.1</a>
+          <a href="/help/">User Guide</a><a href="#changelog">Changelog</a><a href="#support">Support</a><a href="/privacy/">Privacy</a><a href="mailto:kudige@icloud.com?subject=Lumen%20feedback%20or%20support">Contact</a><a href="/Lumen-1.1.dmg" download>Download 1.1</a>
         </div>
         <small>
           © 2026 Kudige Panduranga Shenoy · <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">Website hosting privacy</a>

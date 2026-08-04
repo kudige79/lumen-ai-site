@@ -1255,6 +1255,16 @@ h1 {
   font-weight: 750;
 }
 
+.release-status-preview {
+  border-color: rgba(8, 127, 255, 0.2);
+  background: #e4f2ff;
+  color: var(--blue-deep);
+}
+
+.release-entry-preview {
+  padding-block: 42px;
+}
+
 .release-meta time {
   color: #303844;
   font-size: 14px;
@@ -1303,6 +1313,33 @@ h1 {
 
 .release-highlights li::marker {
   color: var(--blue);
+}
+
+.release-groups {
+  margin-top: 28px;
+  display: grid;
+  gap: 30px;
+}
+
+.release-group {
+  min-width: 0;
+}
+
+.release-group h4 {
+  margin: 0;
+  color: #303844;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+.release-group .release-highlights {
+  margin-top: 13px;
+}
+
+.release-group > p {
+  margin: 13px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
 }
 
 .support-section {
