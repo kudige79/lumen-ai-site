@@ -38,6 +38,9 @@ jobs:
       - name: Test static site
         run: npm run test:pages
 
+      - name: Enforce release readiness
+        run: npm run release:gate
+
       - name: Upload Pages artefact
         uses: actions/upload-pages-artifact@v4
         with:

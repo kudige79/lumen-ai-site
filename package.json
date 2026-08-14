@@ -8,9 +8,10 @@
   },
   "scripts": {
     "build": "npm run test:pages",
+    "release:gate": "node scripts/release-gate.mjs",
     "test": "node --test tests/static-site.test.mjs",
     "test:pages": "node --test tests/static-site.test.mjs",
-    "lint": "node --check tests/static-site.test.mjs"
+    "lint": "node --check tests/static-site.test.mjs && node --check scripts/release-gate.mjs"
   },
   "type": "module"
 }
