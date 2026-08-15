@@ -68,9 +68,10 @@ binary growth in this repository’s history.
 The static tests describe the staged copy. `npm run release:gate` is the
 separate ship gate: it fails while any pending release or policy token remains,
 or unless `public/updates/appcast.xml` is a non-empty regular file with the
-expected marketing version, exact numeric build, canonical GitHub Release URL,
-exact positive byte length and EdDSA signature attribute. The Pages workflow
-runs both checks before it uploads `public/`.
+expected marketing version, a canonical numeric build strictly newer than the
+last shipped build, canonical GitHub Release URL, exact positive byte length
+and EdDSA signature attribute. The Pages workflow runs both checks before it
+uploads `public/`.
 
 For each release:
 
@@ -80,7 +81,8 @@ For each release:
 3. Replace every pending artefact value with that release's URL, display size,
    exact byte size, build, checksum and date. Re-pin the release gate's
    expected marketing version and canonical GitHub Release path for the new
-   release.
+   release. Set `lastShippedBuild` to the build of the release immediately
+   preceding the candidate, never to the candidate being prepared.
 4. Regenerate both hosted policy pages from the final
    `PrivacyPolicy.markdown`, using the one effective date chosen at ship.
 5. Add the generated, signed appcast at `public/updates/appcast.xml`.

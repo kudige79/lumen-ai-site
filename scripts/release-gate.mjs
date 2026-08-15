@@ -15,6 +15,7 @@ const expectedAppcast = {
   byteSize: "⟦PENDING-ARTEFACT:BYTE-SIZE⟧",
   assetUrl: "⟦PENDING-ARTEFACT:RELEASE-URL⟧",
 };
+export const lastShippedBuild = "3";
 const textExtensions = new Set([
   ".css", ".html", ".json", ".md", ".mjs", ".txt", ".xml", ".yaml", ".yml",
 ]);
@@ -39,6 +40,20 @@ async function collectFiles(relativePath) {
   return files;
 }
 
+export function validateReleaseBuild(build) {
+  if (typeof build !== "string" || !/^[1-9][0-9]{0,31}$/.test(build)) {
+    return [
+      "release expectation: build must be a canonical 1–32 digit positive integer",
+    ];
+  }
+  if (BigInt(build) <= BigInt(lastShippedBuild)) {
+    return [
+      `release expectation: build must be greater than shipped build ${lastShippedBuild}`,
+    ];
+  }
+  return [];
+}
+
 export function validateReleaseExpectation(expected) {
   const failures = [];
   const canonicalAsset = /^https:\/\/github\.com\/kudige79\/lumen-ai-site\/releases\/download\/v1\.2\.1\/Lumen-1\.2\.1\.dmg$/;
@@ -48,9 +63,7 @@ export function validateReleaseExpectation(expected) {
   if (!canonicalAsset.test(expected.assetUrl)) {
     failures.push("release expectation: wrong canonical GitHub Release asset URL");
   }
-  if (!/^[1-9][0-9]*$/.test(expected.build)) {
-    failures.push("release expectation: build must be a positive integer");
-  }
+  failures.push(...validateReleaseBuild(expected.build));
   if (!/^[1-9][0-9]*$/.test(expected.byteSize)) {
     failures.push("release expectation: byte size must be a positive integer");
   }
@@ -70,7 +83,7 @@ export function findPendingMarkers(line) {
 }
 
 export function validateAppcast(appcastContents, expected = expectedAppcast) {
-  const failures = [];
+  const failures = [...validateReleaseBuild(expected.build)];
   const attributeValue = (element, name) => {
     const match = element.match(
       new RegExp(`(?:^|\\s)${name}=(?:"([^"]*)"|'([^']*)')`),

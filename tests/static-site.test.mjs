@@ -4,7 +4,9 @@ import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import {
   findPendingMarkers,
+  lastShippedBuild,
   validateAppcast,
+  validateReleaseBuild,
   validateReleaseExpectation,
 } from "../scripts/release-gate.mjs";
 
@@ -1010,13 +1012,13 @@ test("uses one dependency-free GitHub Pages deployment path", async () => {
   const canonicalAsset = "https://example.invalid/Lumen-1.2.1.dmg";
   const syntheticRelease = {
     version: "1.2.1",
-    build: "1",
+    build: "4",
     byteSize: "1",
     assetUrl: canonicalAsset,
   };
   const canonicalRelease = {
     version: "1.2.1",
-    build: "1",
+    build: "4",
     byteSize: "1",
     assetUrl: [
       "https://github.com/kudige79/lumen-ai-site/releases/download",
@@ -1025,6 +1027,19 @@ test("uses one dependency-free GitHub Pages deployment path", async () => {
     ].join("/"),
   };
   assert.deepEqual(validateReleaseExpectation(canonicalRelease), []);
+  assert.equal(lastShippedBuild, "3");
+  assert.deepEqual(validateReleaseBuild("4"), []);
+  assert.deepEqual(validateReleaseBuild("9".repeat(32)), []);
+  assert.match(
+    validateReleaseBuild("3").join("\n"),
+    /greater than shipped build 3/,
+  );
+  for (const nonStringBuild of [4, 4n, new String("4"), Symbol("4")]) {
+    assert.match(
+      validateReleaseBuild(nonStringBuild).join("\n"),
+      /build must be a canonical 1–32 digit positive integer/,
+    );
+  }
   assert.match(
     validateReleaseExpectation({
       ...canonicalRelease,
@@ -1037,7 +1052,28 @@ test("uses one dependency-free GitHub Pages deployment path", async () => {
       ...canonicalRelease,
       build: "banana",
     }).join("\n"),
-    /build must be a positive integer/,
+    /build must be a canonical 1–32 digit positive integer/,
+  );
+  assert.match(
+    validateReleaseExpectation({
+      ...canonicalRelease,
+      build: "03",
+    }).join("\n"),
+    /build must be a canonical 1–32 digit positive integer/,
+  );
+  assert.match(
+    validateReleaseExpectation({
+      ...canonicalRelease,
+      build: "9".repeat(33),
+    }).join("\n"),
+    /build must be a canonical 1–32 digit positive integer/,
+  );
+  assert.match(
+    validateReleaseExpectation({
+      ...canonicalRelease,
+      build: "3",
+    }).join("\n"),
+    /build must be greater than shipped build 3/,
   );
   assert.match(
     validateReleaseExpectation({
@@ -1049,9 +1085,29 @@ test("uses one dependency-free GitHub Pages deployment path", async () => {
   // Synthetic validator fixture only; these numbers are not release metadata.
   const validAppcast = `<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
-  <channel><item><sparkle:version>1</sparkle:version><sparkle:shortVersionString>1.2.1</sparkle:shortVersionString><enclosure url="${canonicalAsset}" length="1" sparkle:edSignature="${signature}" /></item></channel>
+  <channel><item><sparkle:version>4</sparkle:version><sparkle:shortVersionString>1.2.1</sparkle:shortVersionString><enclosure url="${canonicalAsset}" length="1" sparkle:edSignature="${signature}" /></item></channel>
 </rss>`;
   assert.deepEqual(validateAppcast(validAppcast, syntheticRelease), []);
+  assert.match(
+    validateAppcast(
+      validAppcast.replaceAll(
+        "<sparkle:version>4</sparkle:version>",
+        "<sparkle:version>3</sparkle:version>",
+      ),
+      { ...syntheticRelease, build: "3" },
+    ).join("\n"),
+    /build must be greater than shipped build 3/,
+  );
+  assert.match(
+    validateAppcast(
+      validAppcast.replace(
+        "<sparkle:version>4</sparkle:version>",
+        "<sparkle:version>3</sparkle:version>",
+      ),
+      syntheticRelease,
+    ).join("\n"),
+    /wrong build/,
+  );
   assert.match(
     validateAppcast(
       validAppcast.replace(
