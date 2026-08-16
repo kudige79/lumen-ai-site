@@ -152,17 +152,26 @@
               <section>
                 <span class="choice-label">Optional</span>
                 <h3>Cloud AI</h3>
-                <p>Claude, OpenAI, Gemini and xAI’s Grok can be enabled with your own API key. They may be more accurate on difficult files and may charge your provider account.</p>
+                <p>Ollama Cloud, OpenAI, xAI’s Grok, Gemini and Claude can be enabled with your own API key — listed, here and in the app, from lowest to highest typical cost for an ordinary text document at August 2026 list prices. They may be more accurate on difficult files and may charge your provider account or count against your plan.</p>
               </section>
             </div>
             <h3>Set up a cloud provider</h3>
+            <p>The steps are the same for every provider; only where you get the key differs.</p>
             <ol>
-              <li>Paste your key in <strong>Settings → Cloud providers</strong>.</li>
-              <li>Click <strong>Test</strong> to send a short authentication check using that provider’s key and no document data.</li>
-              <li>Switch the provider on. Enabled means Lumen may use that provider and its API credits.</li>
-              <li>Select it under <strong>AI Provider</strong>.</li>
-              <li>Review and accept the disclosure before the first file-related transmission to that provider.</li>
+              <li>Create an account with the provider and generate an API key (per-provider notes below). Copy it straight away — most providers show a key only once.</li>
+              <li>In Lumen, paste the key into that provider’s row in <strong>Settings → Cloud providers</strong> and click <strong>Test</strong>. Lumen sends a short fixed check with your key (no document) and reports “Key works”, “Key rejected”, or that the account has no credit or usage left.</li>
+              <li>Switch the provider on. Enabled means Lumen may run it and use your account; it is off until you switch it on.</li>
+              <li>Choose it as the active model — under <strong>AI Provider</strong> in Settings, or the <strong>Model</strong> menu on the Drop Zone.</li>
+              <li>On the first document you send, read the disclosure and accept it.</li>
             </ol>
+            <h4>Getting a key, per provider (as of August 2026 — providers change their sites, plans and prices; their own pages are authoritative)</h4>
+            <ul>
+              <li><strong>Ollama Cloud</strong> — Sign up free at ollama.com (one account per person), then create a key under <strong>Settings → Keys</strong> (ollama.com/settings/keys); keys don’t expire. A free account is enough for the key to work: the Free plan gives light usage of Ollama’s cloud models with a session limit and a weekly limit, and paid plans raise them. Usage counts against your plan’s limits — Ollama publishes no per-token price — so Lumen shows token counts for it but no cost estimate; you can see how much of your plan you have used at ollama.com/settings, and Ollama e-mails you at 90% of a limit. Lumen talks to ollama.com directly and does not use or need the Ollama app on your Mac; it uses gemma4:31b, one of Ollama’s low-usage open-weight models, which runs on Ollama’s cloud service, not on your Mac. Ollama states (its privacy policy, March 2026) that prompts and responses are processed transiently and never used for training.</li>
+              <li><strong>OpenAI</strong> — Sign in at platform.openai.com → <strong>API keys</strong> (platform.openai.com/api-keys) → <strong>Create new secret key</strong>; the key is shown once, so copy it then (some countries ask for a one-off phone verification for the first key). The key works only after you add a payment method and buy prepaid credit under <strong>Settings → Billing</strong> (minimum US$5; auto-recharge is on by default — switch it off if you don’t want automatic top-ups). A ChatGPT subscription does not cover the API. OpenAI states API inputs and outputs are not used for training unless you opt in. Lumen uses gpt-5.6-luna (list price US$0.20 in / US$1.20 out per million tokens).</li>
+              <li><strong>xAI</strong> — Sign in at accounts.x.ai, open the console at console.x.ai → <strong>API Keys</strong> → <strong>Create API Key</strong> (keys belong to a team; the default team is fine), then buy prepaid credit under <strong>Billing → API spend management</strong> before use — there is no free tier, the card you pay with stays on file for top-ups, and Indian payment cards are not accepted. xAI states API data is not used for training unless you opt in. Lumen uses grok-4.3 (US$1.25 / US$2.50).</li>
+              <li><strong>Gemini</strong> — Sign in at aistudio.google.com → <strong>API Keys</strong> (aistudio.google.com/apikey) → <strong>Create API key</strong>. The key works immediately on Google’s Free tier with no card — but on the Free tier (outside the EEA, UK and Switzerland) Google uses what you send to improve its products, human reviewers may read it, and its terms tell you not to submit sensitive or personal information. For personal documents, set up billing in AI Studio (a Google Cloud billing account and at least US$10 prepaid) so the paid-tier terms apply, under which Google states it does not use your prompts to improve its products. If a Gemini key that used to work is suddenly rejected, create a fresh one — Google is retiring its older key type. Lumen uses gemini-3.5-flash (US$1.50 / US$9 on the paid tier).</li>
+              <li><strong>Claude</strong> — Sign in at platform.claude.com → <strong>Settings → API keys</strong> (platform.claude.com/settings/keys) → create a key (choose an expiry; pick “Never” if you don’t want to re-paste it later). A brand-new account is first asked for a short organisation/use-case form and payment details; the key won’t work without credit on the account, so expect to buy prepaid credit under <strong>Settings → Billing</strong>. Anthropic states API inputs and outputs are not used for training by default. Lumen uses claude-sonnet-5 (US$2 / US$10).</li>
+            </ul>
             <div class="callout">
               <strong>Try a second opinion.</strong>
               <p>Start locally, then use <strong>Try with [provider]</strong> when it is offered on an eligible result. Tick eligible rows and choose <strong>Try Selected with [provider]</strong> to re-check that subset.</p>

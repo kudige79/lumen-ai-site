@@ -53,7 +53,7 @@ const publishedByteSize = "21621653";
 const publishedBuild = "6";
 const releaseDateIso = "2026-08-16";
 const releaseDateDisplay = "16 August 2026";
-const policyEffectiveDate = "7 August 2026";
+const policyEffectiveDate = "17 August 2026";
 const publishedAppcastChecksum =
   "6f52ff78fb3697cda45a8faa6589900f144060f7107b6646c50de4aa2c0b4878";
 const pendingMarkerPrefix = `${String.fromCodePoint(0x27e6)}PENDING-`;
@@ -274,13 +274,14 @@ test("publishes the approved Lumen 1.2.2 product and model facts", () => {
   assert.match(html, /<span>1<\/span> Open Lumen-1\.2\.2\.dmg\./);
   assert.match(html, /macOS 26\.4 or later/);
   assert.match(html, /Apple silicon with 24 GB\+ memory/);
-  assert.match(html, /One local model\. Four optional cloud models\./);
+  assert.match(html, /One local model\. Five optional cloud models\./);
   assert.match(html, /Phi-4 14B/);
   assert.match(html, /mlx-community\/phi-4-4bit/);
   assert.match(html, /claude-sonnet-5/);
   assert.match(html, /gpt-5\.6-luna/);
   assert.match(html, /gemini-3\.5-flash/);
   assert.match(html, /grok-4\.3/);
+  assert.match(html, /gemma4:31b/);
   assert.equal(
     countMatches(
       html,
@@ -293,7 +294,7 @@ test("publishes the approved Lumen 1.2.2 product and model facts", () => {
       html,
       /Document content is sent as extracted text, not original files\. Accepted oversized PDFs use text read locally from a temporary copy of up to the first five pages\./g,
     ),
-    2,
+    3,
   );
   assert.match(
     html,
@@ -500,7 +501,7 @@ test("includes every agreed audit correction", () => {
     html,
     /If the first result is weak, Claude or OpenAI may also receive PDF bytes that fit the inline request limit — the original for an ordinary PDF, or that temporary excerpt for an accepted oversized PDF — or a re-encoded copy of an image document\. The whole original large PDF is not uploaded\./,
   );
-  assert.match(html, /Gemini and xAI never receive original document files\./);
+  assert.match(html, /Gemini, xAI and Ollama Cloud never receive original document files\./);
   assert.doesNotMatch(html, /Extracted text only/);
   assert.match(
     html,
@@ -652,7 +653,7 @@ test("publishes a detailed Lumen 1.2.2 guide", () => {
   assert.match(helpHtml, /Settings → AI Provider/);
   assert.match(
     helpHtml,
-    /short authentication check using that provider’s key and no document data/,
+    /short fixed check with your key \(no document\)/,
   );
   assert.match(
     helpHtml,
@@ -849,7 +850,7 @@ test("publishes the F1 policy with its final effective date", async () => {
   assert.notEqual(article, "");
   assert.equal(
     createHash("sha256").update(normalisePolicyArticle(article)).digest("hex"),
-    "e027f0d300e8abdda52c9834ae0aa0ec97e7eaccf63df004c4de2b83b24b1390",
+    "25030cb2c8ae154c47dc3223cfc996a23ece1c0219303044a84564cfbc9990bd",
   );
   assert.equal(
     countMatches(article, /<section class="guide-section"/g),

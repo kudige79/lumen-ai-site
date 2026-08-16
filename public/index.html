@@ -231,7 +231,7 @@
                 Your choice of provider
               </h3>
               <p>
-                For difficult files or cloud-only visual photo descriptions, use your own Claude, OpenAI, Gemini or xAI API key after a clear consent prompt. Test a provider key without sending document data.
+                For difficult files or cloud-only visual photo descriptions, use your own Ollama Cloud, OpenAI, xAI, Gemini or Claude API key after a clear consent prompt. Test a provider key without sending document data.
               </p>
             </article>
             <article class="feature-card">
@@ -329,7 +329,7 @@
                 Supported models
               </p>
               <h2 id="models-title">
-                One local model. Four optional cloud models.
+                One local model. Five optional cloud models.
               </h2>
             </div>
             <p>
@@ -382,18 +382,18 @@
           </p>
           <ul class="cloud-model-grid" aria-label="Supported cloud AI models" role="list">
             <li class="cloud-model-card">
-              <span class="model-type">Claude · Cloud</span>
+              <span class="model-type">Ollama Cloud · Cloud</span>
               <h3>
-                Claude Sonnet 5
+                Gemma 4 31B (hosted)
               </h3>
-              <code class="model-id">claude-sonnet-5</code>
+              <code class="model-id">gemma4:31b</code>
               <dl class="model-facts">
                 <div>
                   <dt>
                     Documents
                   </dt>
                   <dd>
-                    Accepted oversized PDFs use extracted text from a temporary copy of up to the first five pages. A weak result may also send PDF bytes that fit the inline request limit — the original for an ordinary PDF, or that temporary copy for an oversized PDF — or a re-encoded image.
+                    Document content is sent as extracted text, not original files. Accepted oversized PDFs use text read locally from a temporary copy of up to the first five pages. An open-weight model that runs on Ollama’s cloud service, not on your Mac; a free Ollama account is enough for a key, and usage is counted against your plan’s limits — Ollama publishes no per-token price.
                   </dd>
                 </div>
                 <div>
@@ -432,6 +432,31 @@
               </dl>
             </li>
             <li class="cloud-model-card">
+              <span class="model-type">xAI · Cloud</span>
+              <h3>
+                Grok 4.3
+              </h3>
+              <code class="model-id">grok-4.3</code>
+              <dl class="model-facts">
+                <div>
+                  <dt>
+                    Documents
+                  </dt>
+                  <dd>
+                    Document content is sent as extracted text, not original files. Accepted oversized PDFs use text read locally from a temporary copy of up to the first five pages.
+                  </dd>
+                </div>
+                <div>
+                  <dt>
+                    Photos
+                  </dt>
+                  <dd>
+                    Visual descriptions for eligible photos.
+                  </dd>
+                </div>
+              </dl>
+            </li>
+            <li class="cloud-model-card">
               <span class="model-type">Gemini · Cloud</span>
               <h3>
                 Gemini 3.5 Flash
@@ -457,18 +482,18 @@
               </dl>
             </li>
             <li class="cloud-model-card">
-              <span class="model-type">xAI · Cloud</span>
+              <span class="model-type">Claude · Cloud</span>
               <h3>
-                Grok 4.3
+                Claude Sonnet 5
               </h3>
-              <code class="model-id">grok-4.3</code>
+              <code class="model-id">claude-sonnet-5</code>
               <dl class="model-facts">
                 <div>
                   <dt>
                     Documents
                   </dt>
                   <dd>
-                    Document content is sent as extracted text, not original files. Accepted oversized PDFs use text read locally from a temporary copy of up to the first five pages.
+                    Accepted oversized PDFs use extracted text from a temporary copy of up to the first five pages. A weak result may also send PDF bytes that fit the inline request limit — the original for an ordinary PDF, or that temporary copy for an oversized PDF — or a re-encoded image.
                   </dd>
                 </div>
                 <div>
@@ -485,7 +510,7 @@
           <div class="cloud-model-note">
             <strong>Cloud AI is always opt-in.</strong>
             <p>
-              Providers are off by default and use your own API key; their API charges may apply. Lumen asks for permission before it first sends file-related content to a provider. A document’s filename and locally extracted text are normally sent. Lumen keeps a list of name mappings so that people’s names are spelt consistently; up to 300 of them are sent with every document, including documents those people do not appear in. For an accepted PDF larger than about 30 MB, Lumen reads text on your Mac from a temporary copy of up to its first five pages; any selected provider may receive that extracted text where text can be extracted. If the text-only result looks weak, Claude or OpenAI may also receive PDF bytes that fit the inline request limit — the original for an ordinary PDF, or that temporary copy for an accepted oversized PDF — or a re-encoded copy of an image document. Gemini and xAI never receive original document files. All four may receive eligible images when visual photo descriptions are enabled and consented.
+              Providers are off by default and use your own API key; their API charges may apply. Lumen asks for permission before it first sends file-related content to a provider. A document’s filename and locally extracted text are normally sent. Lumen keeps a list of name mappings so that people’s names are spelt consistently; up to 300 of them are sent with every document, including documents those people do not appear in. For an accepted PDF larger than about 30 MB, Lumen reads text on your Mac from a temporary copy of up to its first five pages; any selected provider may receive that extracted text where text can be extracted. If the text-only result looks weak, Claude or OpenAI may also receive PDF bytes that fit the inline request limit — the original for an ordinary PDF, or that temporary copy for an accepted oversized PDF — or a re-encoded copy of an image document. Gemini, xAI and Ollama Cloud never receive original document files. All five may receive eligible images when visual photo descriptions are enabled and consented. Cloud providers are listed here, and in the app, from lowest to highest typical cost for an ordinary text document at August 2026 list prices.
             </p>
           </div>
         </div>
