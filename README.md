@@ -28,9 +28,9 @@ Then open `http://localhost:8080`. The tests do not require Python; they check
 the product copy, metadata, internal links, native disclosures, social card,
 download size and checksum.
 
-The landing page lives at `public/index.html`. The detailed Lumen 1.2 guide
-lives at `public/help/index.html`, while every current download link points to
-the Lumen 1.2 GitHub Release asset. The full in-site Privacy Policy lives at
+The landing page lives at `public/index.html`. The detailed Lumen 1.2.1 guide
+lives at `public/help/index.html`; at ship, every current download link must
+point to the Lumen 1.2.1 GitHub Release asset. The full in-site Privacy Policy lives at
 `public/privacy/index.html` and mirrors the policy compiled into the app. Keep
 each page's release copy aligned with the downloadable DMG.
 
@@ -40,6 +40,11 @@ each page's release copy aligned with the downloadable DMG.
 `main` changes. The custom domain is configured in GitHub Pages settings rather
 than with a repository `CNAME` file; the Actions deployment does not require a
 `.nojekyll` file.
+
+The release branch is not a preview environment. A push to `release/*`
+does not deploy, but a push, merge or fast-forward that reaches `main` starts
+the Pages workflow and therefore crosses the deploy boundary. Do not manually
+dispatch the Pages workflow from a staging branch.
 
 ## Release assets
 
@@ -57,3 +62,33 @@ Lumen 1.1 remains bundled here so its existing download URL stays stable. From
 Lumen 1.2 onward, publish versioned installers through GitHub Releases and point
 the website download links at the matching release asset, avoiding further
 binary growth in this repository’s history.
+
+## Release gate
+
+The static tests describe the staged copy. `npm run release:gate` is the
+separate ship gate: it fails while any pending release or policy token remains,
+or unless `public/updates/appcast.xml` is a non-empty regular file with the
+expected marketing version, a canonical numeric build strictly newer than the
+last shipped build, canonical GitHub Release URL, exact positive byte length
+and EdDSA signature attribute. The Pages workflow runs both checks before it
+uploads `public/`.
+
+For each release:
+
+1. Obtain both review greenlights on the non-deploying release branch.
+2. Build, sign and notarise the DMG, publish its GitHub Release asset, and verify
+   the asset's byte count and SHA-256 locally and after download.
+3. Replace every pending artefact value with that release's URL, display size,
+   exact byte size, build, checksum and date. Re-pin the release gate's
+   expected marketing version and canonical GitHub Release path for the new
+   release. Set `lastShippedBuild` to the build of the release immediately
+   preceding the candidate, never to the candidate being prepared.
+4. Regenerate both hosted policy pages from the final
+   `PrivacyPolicy.markdown`, using the one effective date chosen at ship.
+5. Add the generated, signed appcast at `public/updates/appcast.xml`.
+6. Run the static tests, release gate, both local policy gates and the checksum
+   verification. Obtain both greenlights again on this final ship delta.
+7. Merge or push the reviewed site commit to `main`, then merge the matching
+   policy-mirror commit to its `main`; wait for both Pages deployments.
+8. Run both policy gates against the live URLs, verify the live appcast and
+   download checksum, and confirm the legacy `/Lumen-1.1.dmg` URL still works.
