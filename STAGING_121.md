@@ -1,6 +1,6 @@
 # Lumen 1.2.1 website staging record
 
-**Status:** STAGED FOR DUAL REVIEW; NOT DEPLOYABLE
+**Status:** FINAL SHIP VALUES RESOLVED; LOCAL GATES PASS; DEPLOYMENT PENDING
 
 **Website repository:** `kudige79/lumen-ai-site`
 
@@ -34,12 +34,14 @@ to the mirror's `main` is its separate deploy boundary.
 
 ## 2. Sources and sequencing
 
-- The local `website/` checkout is the committed `release/1.2.1` branch at
-  `5b5c794`, two commits above pushed `origin/main` `185a5c4`. Its tracked tree
-  is clean. Its two pre-existing dirty entries are untracked generated trees:
+- The local `website/` checkout is the `release/1.2.1` branch through F1
+  synchronisation commit `5b178c4`, above pushed `origin/main` `185a5c4`,
+  with this reviewed final ship delta on top. Before that delta, its only dirty
+  entries were the two pre-existing untracked generated trees
   `.wrangler/` (52 KB cache/configuration state) and `dist/` (21 MB prior build
   output, including JavaScript and a copied legacy DMG). Neither residue enters
-  this proposal.
+  this proposal; the new `public/updates/appcast.xml` is an intentional tracked
+  release file, not a third residue.
 - Current large-PDF behaviour and consent copy: `CloudConsentModal.swift`,
   `SettingsView.swift`, `UserGuide.swift`, `PDFExtractor.swift` and
   `JobOrchestrator.swift` at current app HEAD `d08014a`.
@@ -48,13 +50,16 @@ to the mirror's `main` is its separate deploy boundary.
   app HEAD. F1 has landed: the policy now contains the truthful §1/§2 wording
   and final §12 software-update disclosure. Both staged HTML bodies project
   those exact 49 blocks.
-- The effective date remains a pending user decision. Both hosted copies keep
-  the same explicit date token until the single ship date is chosen.
-- Release artefact values and the signed appcast do not exist yet. They are
-  deliberately represented by fail-closed tokens.
+- The effective date is final at **7 August 2026**, matching both fields in the
+  policy embedded in the signed Lumen 1.2.1 build.
+- The public GitHub Release is live. Its DMG is 21,615,590 bytes, has SHA-256
+  `ab23bbf99c9d08c16b502ce16d2898dd27fceb90c01513297f4825d9d662eb15`,
+  and is byte-identical to the notarised local artefact. The generated appcast
+  is copied byte-for-byte from the app repository and has SHA-256
+  `0c59484cb049c756eeb6b36f44cc02cbdfc6ca2ade5abd6db2ef72b17d352665`.
 
-The F1 body copy is now final in both staged policies. The only deliberate
-policy difference from `PrivacyPolicy.markdown` is the pending effective date.
+The F1 body copy and effective date are final in both staged policy copies.
+Both local policy gates report 49/49 blocks with zero differences.
 
 ## 3. Staged-versus-live diff
 
@@ -66,17 +71,18 @@ policy difference from `PrivacyPolicy.markdown` is the pending effective date.
 | `README.md` | Describes the 1.2.1 source files, exact deploy boundary and permanent cross-repository release checklist. The 1.1 preservation rule and “from 1.2 onward” GitHub Releases rule remain. |
 | `STAGING_121.md` | Adds this audit/deployment trail. |
 | `package.json` | Adds the dependency-free `release:gate` command. |
-| `public/index.html` | Stages 1.2.1 labels and artefact tokens; corrects all current provider, cloud-summary and FAQ large-PDF claims; scopes the account/tracking statement around the separate updater path; makes session/cleanup prose version-neutral; adds two explicitly non-exhaustive 1.2.1 website-impact highlights; moves 1.2 to Previous release. The full historical 1.2 entry, including its then-true upload route, is unchanged. |
-| `public/help/index.html` | Stages all guide metadata/chrome at 1.2.1; corrects the Unprocessed, privacy and troubleshooting large-PDF text; removes the unsafe no-server absolute; adds a Software updates section using the Settings gold copy verbatim. |
-| `public/privacy/index.html` | Projects F1's exact §1, §2 and numbered §12 into the already-audited policy body; restores final 1.2.1 chrome and contents labels; keeps only the effective-date token. |
+| `public/index.html` | Publishes the verified 1.2.1 URL, build 4, 20.6-MB display size, checksum and 16 August 2026 release date; corrects all current provider, cloud-summary and FAQ large-PDF claims; scopes the account/tracking statement around the separate updater path; makes session/cleanup prose version-neutral; adds two explicitly non-exhaustive 1.2.1 website-impact highlights; moves 1.2 to Previous release. The full historical 1.2 entry, including its then-true upload route, is unchanged. |
+| `public/help/index.html` | Publishes all guide metadata/chrome at 1.2.1 build 4; corrects the Unprocessed, privacy and troubleshooting large-PDF text; removes the unsafe no-server absolute; adds a Software updates section using the Settings gold copy verbatim. |
+| `public/privacy/index.html` | Projects F1's exact §1, §2 and numbered §12 into the already-audited policy body; restores final 1.2.1 chrome and contents labels; publishes the canonical 7 August 2026 effective date. |
+| `public/updates/appcast.xml` | Byte-identical copy of the generated 795-byte Sparkle appcast from `Lumen/dist/appcast.xml`; points build 4 at the verified public DMG. |
 | `scripts/release-gate.mjs` | Lists every complete or truncated pending token as `file:line`, rejects surviving staging-only privacy phrases, and exits 1 until the expected release fields and a structurally expected Sparkle appcast agree. It checks the marketing version, canonical repository/tag/filename path, exact numeric build and byte length, Sparkle namespace and version elements, and the shape of the EdDSA enclosure-signature attribute. |
-| `tests/static-site.test.mjs` | Re-pins the F1 policy digest and remaining marker counts, locks the final chrome/§2/§12 copy, retains the adversarial appcast fixtures and keeps the 1.2 changelog and 1.1 binary locks unchanged. |
+| `tests/static-site.test.mjs` | Re-pins every final release value and the exact appcast SHA-256, locks the final policy chrome/§2/§12 copy, retains the adversarial appcast fixtures and keeps the 1.2 changelog and 1.1 binary locks unchanged. |
 
 ### `kudige79/lumen-privacy`
 
 | File | Staged change from live 1 August copy |
 |---|---|
-| `index.html` | Preserves all HTML chrome and WEB-1's stable `https://lumen-ai.eu/` Download links; projects F1's exact §1, §2 and numbered §12; keeps only the effective-date token. |
+| `index.html` | Preserves all HTML chrome and WEB-1's stable `https://lumen-ai.eu/` Download links; projects F1's exact §1, §2 and numbered §12; publishes the canonical 7 August 2026 effective date. |
 | `support.html` | Removes the stale “nothing leaves”, “one-time” consent/download, permanent-folder-grant and unconditional iWork-preview claims; adds the updater disclosure and narrows intake/revert wording to supported and eligible files. |
 
 The mirror is confirmed to live in `kudige79/lumen-privacy`, not the main site
@@ -95,126 +101,90 @@ repository.
 | **Help, home highlights, both staged policies and mirror Support:** checks are on by default, run after launch only when a daily check is due, identify Lumen/version, and expose IP/time to the server without document data or a Mac system profile. | Exact Settings gold paragraph incorporated by `b1699e8`; `Info.plist:9-24`; `UpdateController.swift:62-100`. | The gold paragraph is verbatim. The separate lead locates the control at Settings → Advanced → Software Updates; the copy does not claim anonymity. |
 | **Help, home highlights, both staged policies and mirror Support:** available updates download from GitHub Releases; automatic checks can be disabled and a manual menu check remains; download/install stay user-chosen. | `SettingsView.swift`; `DocumentRenamerApp.swift:71-75`; `SUAutomaticallyUpdate = NO`; `SUAllowsAutomaticUpdates = NO`. | The `lumen-ai.eu` appcast host is distinguished from the GitHub asset host; no silent download/install is implied. |
 | **Both staged policies:** the truthful §1/§2 wording, Z15 clauses, legacy-cleanup paragraph, §6(e) operational records and numbered §12 updater disclosure are transcribed from the current Swift constant. | All 49 blocks of `PrivacyPolicy.markdown` at `b1699e8`, unchanged at current HEAD. | Both local gates report `differing=0`; no F1 body or chrome marker remains. |
-| **Both staged policies:** the effective date remains provisional. | Ship-date decision is still pending; `PrivacyPolicy.swift` currently says 7 August 2026. | The one retained date token keeps both copies non-publishable until the same approved date is applied to the app and both sites. |
+| **Both staged policy copies:** the effective date is 7 August 2026. | Both the constant and Markdown date in the signed build's `PrivacyPolicy.swift` say 7 August 2026. | Both HTML copies use that exact date; the local policy gates report zero body or header differences. |
 | **Home changelog:** two website-impact items are labelled “Highlights in 1.2.1”, not a complete release inventory. | Z15 and UPD-1 entries in `APP_STORE_COMPLIANCE_ROADMAP.md`; this round's explicit scope. | A10, Z12, Z10, Z9, ITR, AF and other app work is not falsely represented as absent; full release notes remain a release artefact. The highlight block is copy-hashed. |
 | **Home changelog:** 1.2 becomes Previous release while its then-true Files-API history remains unchanged. | Shipped 1.2 behaviour and the existing locked 1.2 digest; Z15 landed only for 1.2.1. | Historical truth is not rewritten into current behaviour. |
 | **Mirror Support:** cloud analysis is optional/off by default and uses the user's key; consent is shown before the first file-related transmission to each provider, materially changed disclosures are shown again, and photo naming has separate consent. | `CloudConsentModal.swift`; `AppSettings` consent-version/revocation paths. | The wording leaves the user-invoked key-test probe outside file-egress consent, as the app does. “One-time” is removed; the separate default-on updater is disclosed immediately below. |
 | **Mirror Support:** Local AI needs Apple silicon, 24 GB+ memory and an approximately 8.26-GB model download. | `UserGuide.swift`/`SettingsView.swift` Local AI requirements and model metadata. | “One-time” is removed because models can be removed, re-downloaded or revised. |
 | **Mirror Support:** selected-file/folder access is sandbox-scoped and macOS may ask again; iWork is read from an embedded PDF/image preview only when available; revert applies to eligible prior files. | `AppSettings.ensureFolderAccessForRename`; security-scoped bookmark flow; `FileWalker`/iWork preview extraction; `RevertLogStore`. | No permanent-grant, guaranteed-preview, process-everything or undo-everything absolute remains. |
-| **All current chrome:** 1.2.1 is the next downloadable version, but build, URL, display/exact size, checksum and date are unknown. | Roadmap 1.2.1 ship gate; no 1.2.1 DMG/Release yet. | Every unknown is a blocking token. Nothing from 1.2 is reused or guessed; the 1.1 legacy artefact remains independently locked. |
+| **All current chrome:** 1.2.1 build 4 is the current download, using the public versioned GitHub Release asset. | Public Release API plus a fresh authenticated download: 21,615,590 bytes and SHA-256 `ab23bbf99c9d08c16b502ce16d2898dd27fceb90c01513297f4825d9d662eb15`. | The page uses the established binary-size display convention (`20.6 MB`), while the gate and appcast lock the exact byte count. The 1.1 legacy artefact remains independently locked. |
 
-## 5. Placeholder census
+## 5. Final release-value census
 
-The main-site gate scans deployable/public copy, tests, workflow metadata,
-README and package metadata. It intentionally excludes this staging record,
-which documents the literal token names.
+All 27 main-site marker occurrences and the mirror's one date marker are
+resolved. The release gate scans deployable/public copy, tests, workflow
+metadata, README and package metadata and reports no pending or truncated
+token and no provisional privacy phrase.
 
-### Main site: deployable HTML (16 occurrences)
+The final values are locked at every former marker site:
 
-1. `public/index.html:47` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧` (header).
-2. `public/index.html:66` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧` (hero).
-3. `public/index.html:69` — `⟦PENDING-ARTEFACT:FILE-SIZE⟧`.
-4. `public/index.html:546` — `⟦PENDING-ARTEFACT:BUILD⟧`.
-5. `public/index.html:554` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧`.
-6. `public/index.html:554` — `⟦PENDING-ARTEFACT:FILE-SIZE⟧`.
-7. `public/index.html:605` — `⟦PENDING-ARTEFACT:SHA256⟧`.
-8. `public/index.html:629` — `⟦PENDING-ARTEFACT:RELEASE-DATE-ISO⟧`.
-9. `public/index.html:629` — `⟦PENDING-ARTEFACT:RELEASE-DATE-DISPLAY⟧`.
-10. `public/index.html:885` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧` (footer).
-11. `public/help/index.html:44` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧`.
-12. `public/help/index.html:65` — `⟦PENDING-ARTEFACT:BUILD⟧`.
-13. `public/help/index.html:439` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧`.
-14. `public/privacy/index.html:44` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧`.
-15. `public/privacy/index.html:60` — `⟦PENDING-F1:POLICY-EFFECTIVE-DATE⟧`.
-16. `public/privacy/index.html:197` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧`.
+- eight download anchors use the canonical `v1.2.1` GitHub Release asset;
+- Home publishes `20.6 MB`, build `4`, the exact DMG SHA-256 and the
+  `2026-08-16` / `16 August 2026` release date;
+- Help publishes build `4` and the same release URL;
+- both privacy copies publish `7 August 2026`;
+- the site gate pins build `4`, `21615590` bytes and the canonical URL; and
+- the static suite pins every value plus the exact appcast SHA-256.
 
-### Main site: release-gate expectations (3 occurrences)
-
-17. `scripts/release-gate.mjs:14` — expected appcast build.
-18. `scripts/release-gate.mjs:15` — exact appcast byte size.
-19. `scripts/release-gate.mjs:16` — canonical release URL.
-
-### Main site: test constants (8 occurrences)
-
-20. `tests/static-site.test.mjs:46` — release URL.
-21. `tests/static-site.test.mjs:48` — SHA-256.
-22. `tests/static-site.test.mjs:49` — display file size.
-23. `tests/static-site.test.mjs:50` — exact byte size.
-24. `tests/static-site.test.mjs:51` — build.
-25. `tests/static-site.test.mjs:52` — ISO release date.
-26. `tests/static-site.test.mjs:53` — display release date.
-27. `tests/static-site.test.mjs:54` — policy effective date.
-
-In addition, `public/updates/appcast.xml` is deliberately absent and is an
-independent release-gate failure. The permanent provisional-copy defence remains,
-but finds zero staging-only privacy phrases after F1. Release-expectation checks
-also remain red while build, byte size and URL carry artefact tokens.
-
-### Separate policy mirror (1 occurrence)
-
-28. `kudige79/lumen-privacy:index.html:534` —
-    `⟦PENDING-F1:POLICY-EFFECTIVE-DATE⟧`.
-
-The mirror's legacy Pages service deploys directly from its `main` branch and
-has no enforceable pre-upload hook. Its release branch therefore remains
-local/unpushed until the effective date is resolved; the mirror `main` push is
-permitted only after the local word-identity gate exits 0 and the final delta
-has both greenlights.
+The mirror still deploys directly from its `main` branch and has no pre-upload
+CI hook. It may move only with the main policy deployment after its local gate
+passes, which it now does.
 
 ## 6. `/updates/` decision
 
-Do not pre-publish an appcast. Treat the public 1.2.1 GitHub Release, generated
-signed `public/updates/appcast.xml` and final site commit as one coordinated
-ship cutover: verify the Release asset first, then deploy the appcast/site
-immediately afterwards. A 404 before then is deliberate for
-development/staging 1.2.1 builds and their silent scheduled checks. Shipped
-1.2 has no updater, so publishing early would be harmless but useless and
-would create another artefact that could drift.
+The public 1.2.1 Release asset was published and verified first. The generated
+795-byte appcast is now staged byte-for-byte at `public/updates/appcast.xml` for
+the same deployment as the 1.2.1 site. Its enclosure URL, build, exact length
+and Ed25519 signature pass the app's independent release gate. The production
+endpoint remains a deliberate 404 until the reviewed main-site commit deploys.
+
+The already-public `v1.2.1` tag points to the pre-cutover site base `185a5c4`
+because the Release asset had to exist before the appcast/site deployment.
+This does not affect the DMG asset, its stable URL or Sparkle. The public tag is
+not silently moved after publication.
 
 ## 7. Ship checklist
 
 The shorthand “merge, then fill placeholders” cannot be literal here: a main
-merge is the deployment boundary. The safe order is:
+merge is the deployment boundary. The safe order and current state are:
 
-1. Obtain Codex and Claude greenlights on this staged branch.
-2. F1 is landed and both local policy bodies are aligned. Choose and apply the
-   single ship effective date to `PrivacyPolicy.swift` and both HTML copies,
-   then require both local policy gates to exit 0.
-3. Build/sign/notarise 1.2.1 and publish the GitHub Release asset first.
-4. Fill the release URL, display size, exact byte size, build, SHA-256 and date
-   tokens from that exact public artefact; re-pin the matching test constants
-   and the release gate's version/path expectation.
-5. Add Round B's generated, signed `public/updates/appcast.xml` and verify its
-   Sparkle namespace, child version/build elements, enclosure URL, EdDSA
-   signature and exact length against the Release.
-6. Run `npm run lint`, `npm test`, `npm run release:gate`, both local
-   `policy_gate.py` invocations and local/remote checksum comparisons. Every
-   command must exit 0.
-7. Obtain both greenlights on the final ship delta.
-8. Merge/push the main-site release commit to `main` (this starts deployment),
-   then merge/push the matching mirror commit to its `main`.
-9. Wait for both Pages builds. Run `policy_gate.py` against both live policy
-   URLs; verify the live appcast and 1.2.1 checksum; confirm the stable
-   `/Lumen-1.1.dmg` URL still returns the preserved 1.1 artefact.
+1. [x] Obtain Codex and Claude greenlights on the staged copy and F1 delta.
+2. [x] Apply the canonical 7 August 2026 policy date to both staged copies;
+   both local policy gates exit 0.
+3. [x] Build/sign/notarise 1.2.1 and publish the GitHub Release asset first.
+4. [x] Verify a fresh public download byte-for-byte, then fill every site,
+   test and release-gate value from that exact artefact.
+5. [x] Copy Round B's generated appcast byte-for-byte and verify its namespace,
+   version/build elements, enclosure URL, length and Ed25519 signature.
+6. [x] Run lint, static tests, the release gate, both local policy gates,
+   local/remote checksum comparison and the app's cryptographic release gate.
+7. [x] Complete the final value/copy adversarial review.
+8. [ ] Merge/push the main-site release commit to `main` (this starts
+   deployment), then merge/push the matching mirror commit to its `main`.
+9. [ ] Wait for both Pages builds; run both live policy gates; verify the live
+   appcast and 1.2.1 checksum; confirm the stable `/Lumen-1.1.dmg` URL.
 
 ## 8. Verification at staging
 
 - Baseline `npm test`: 15/15 passed at `185a5c4`.
-- Staged `npm run lint`: passed.
-- Staged `npm test`: 16/16 passed, including the exact HTML-file set,
+- Final `npm run lint`: passed.
+- Final `npm test`: 16/16 passed, including the exact HTML-file set,
   zero-JavaScript locks, both changelog digests, and adversarial appcast
   validator cases.
-- Staged `npm run release:gate`: **expected exit 1**, enumerating 27 main-site
-  markers, zero staging-only privacy phrases, three unresolved release
-  expectations and the missing appcast. This is the intended deploy block.
-- Both staged policy gates: **expected exit 1** solely for the pending effective
-  date. Each reports `blocks: swift=49 html=49 differing=0 date=DRIFT title=ok`.
-  The body is word-identical; publication remains blocked until the one ship
-  date is applied everywhere.
+- Final `npm run release:gate`: passed with no marker, expectation or appcast
+  failure.
+- Both local policy gates: passed with
+  `blocks: swift=49 html=49 differing=0 date=ok title=ok`.
+- Public DMG comparison: a fresh download is byte-identical to the notarised
+  local DMG at 21,615,590 bytes and the published SHA-256.
+- App release gate: 8/8 passed, including Ed25519 verification against the
+  embedded public key and rejection of a one-byte-tampered DMG.
+- Appcast identity: the staged file is byte-identical to `Lumen/dist/appcast.xml`
+  and hashes to `0c59484cb049c756eeb6b36f44cc02cbdfc6ca2ade5abd6db2ef72b17d352665`.
 - Codex adversarial copy review: **passed** after three independent scope, copy
   and release-gate attacks; all concrete findings were corrected and re-checked.
-- Claude's word-by-word greenlight covers the committed staging base. The F1
-  clearance delta remains pending review and approval before local application.
+- Claude's word-by-word greenlight covers the staged copy and F1 clearance;
+  the user supplied and approved the exact final release values.
 
 ## 9. Deliberately untouched
 
@@ -225,12 +195,12 @@ merge is the deployment boundary. The safe order is:
 - The full historical Lumen 1.2 changelog copy and digest, including the
   upload behaviour that was true in 1.2.
 - `public/og.png`, icons, CSS, sitemap, robots file and 404 page.
-- `public/updates/`: no unsigned or speculative appcast is staged.
 - Mirror HTML chrome, including WEB-1's stable landing-page Download links;
-  only the F1 policy-body sync and the already-audited Support copy change, while
-  the effective-date marker remains.
-- The staged base is committed locally on both `release/1.2.1` branches. This F1
-  clearance delta remains only in disposable review clones until explicit
-  approval; no remote branch or deploying `main` branch has moved.
+  only the F1 policy-body sync, final effective date and the already-audited
+  Support copy change.
+- The generated appcast is copied, not regenerated or reformatted, in the site
+  repository. The 1.2.1 DMG itself remains hosted only by GitHub Releases.
+- Both `release/1.2.1` branches remain non-deploying until the final commits are
+  pushed to their respective `main` branches.
 - The canonical site's untracked `.wrangler/` and `dist/` trees: both remain
   untouched and excluded from the proposal.

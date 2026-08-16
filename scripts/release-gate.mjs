@@ -11,9 +11,9 @@ const scanRoots = [".github", "public", "scripts", "tests"];
 const scannedFiles = ["README.md", "package.json"];
 const expectedAppcast = {
   version: "1.2.1",
-  build: "⟦PENDING-ARTEFACT:BUILD⟧",
-  byteSize: "⟦PENDING-ARTEFACT:BYTE-SIZE⟧",
-  assetUrl: "⟦PENDING-ARTEFACT:RELEASE-URL⟧",
+  build: "4",
+  byteSize: "21615590",
+  assetUrl: "https://github.com/kudige79/lumen-ai-site/releases/download/v1.2.1/Lumen-1.2.1.dmg",
 };
 export const lastShippedBuild = "3";
 const textExtensions = new Set([

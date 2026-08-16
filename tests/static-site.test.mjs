@@ -26,6 +26,7 @@ const [
   workflow,
   readme,
   releaseGate,
+  appcastBytes,
 ] = await Promise.all([
     readFile(new URL("index.html", publicRoot), "utf8"),
     readFile(new URL("help/index.html", publicRoot), "utf8"),
@@ -39,19 +40,23 @@ const [
   readFile(new URL(".github/workflows/deploy-pages.yml", root), "utf8"),
   readFile(new URL("README.md", root), "utf8"),
   readFile(new URL("scripts/release-gate.mjs", root), "utf8"),
+  readFile(new URL("updates/appcast.xml", publicRoot)),
 ]);
 
 const packageJson = JSON.parse(packageText);
 const releaseAssetUrl =
-  "⟦PENDING-ARTEFACT:RELEASE-URL⟧";
+  "https://github.com/kudige79/lumen-ai-site/releases/download/v1.2.1/Lumen-1.2.1.dmg";
 const publishedChecksum =
-  "⟦PENDING-ARTEFACT:SHA256⟧";
-const publishedSize = "⟦PENDING-ARTEFACT:FILE-SIZE⟧";
-const publishedByteSize = "⟦PENDING-ARTEFACT:BYTE-SIZE⟧";
-const publishedBuild = "⟦PENDING-ARTEFACT:BUILD⟧";
-const releaseDateIso = "⟦PENDING-ARTEFACT:RELEASE-DATE-ISO⟧";
-const releaseDateDisplay = "⟦PENDING-ARTEFACT:RELEASE-DATE-DISPLAY⟧";
-const policyEffectiveDate = "⟦PENDING-F1:POLICY-EFFECTIVE-DATE⟧";
+  "ab23bbf99c9d08c16b502ce16d2898dd27fceb90c01513297f4825d9d662eb15";
+const publishedSize = "20.6 MB";
+const publishedByteSize = "21615590";
+const publishedBuild = "4";
+const releaseDateIso = "2026-08-16";
+const releaseDateDisplay = "16 August 2026";
+const policyEffectiveDate = "7 August 2026";
+const publishedAppcastChecksum =
+  "0c59484cb049c756eeb6b36f44cc02cbdfc6ca2ade5abd6db2ef72b17d352665";
+const pendingMarkerPrefix = `${String.fromCodePoint(0x27e6)}PENDING-`;
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -106,28 +111,23 @@ test("publishes a complete zero-JavaScript landing page", async () => {
   );
 });
 
-test("keeps the staged 1.2.1 release fail-closed", async () => {
-  const stagedHtml = [html, helpHtml, privacyHtml].join("\n");
-  const expectedMarkers = new Map([
-    [releaseAssetUrl, 8],
-    [publishedSize, 2],
-    [publishedBuild, 2],
-    [publishedChecksum, 1],
-    [releaseDateIso, 1],
-    [releaseDateDisplay, 1],
-    [policyEffectiveDate, 1],
-  ]);
-
-  for (const [marker, expectedCount] of expectedMarkers) {
-    assert.equal(
-      countMatches(stagedHtml, new RegExp(escapeRegExp(marker), "g")),
-      expectedCount,
-      `${marker} should appear ${expectedCount} time(s) in public HTML`,
-    );
-  }
-
-  assert.doesNotMatch(stagedHtml, /releases\/download\/v1\.2\/Lumen-1\.2\.dmg/);
-  await assert.rejects(access(new URL("updates/appcast.xml", publicRoot)));
+test("publishes a fully resolved Lumen 1.2.1 release", () => {
+  const publishedHtml = [html, helpHtml, privacyHtml].join("\n");
+  assert.equal(publishedHtml.includes(pendingMarkerPrefix), false);
+  assert.doesNotMatch(publishedHtml, /releases\/download\/v1\.2\/Lumen-1\.2\.dmg/);
+  assert.equal(
+    createHash("sha256").update(appcastBytes).digest("hex"),
+    publishedAppcastChecksum,
+  );
+  assert.deepEqual(
+    validateAppcast(appcastBytes.toString("utf8"), {
+      version: "1.2.1",
+      build: publishedBuild,
+      byteSize: publishedByteSize,
+      assetUrl: releaseAssetUrl,
+    }),
+    [],
+  );
 });
 
 test("ships canonical and search/social-preview metadata for lumen-ai.eu", () => {
@@ -258,7 +258,7 @@ test("publishes crawler discovery files for the canonical URL", () => {
   assert.match(sitemapText, /<\/urlset>\s*$/);
 });
 
-test("stages the approved Lumen 1.2.1 product and model facts", () => {
+test("publishes the approved Lumen 1.2.1 product and model facts", () => {
   assert.match(html, /Turn messy files into meaningful names\./);
   assert.match(
     html,
@@ -559,7 +559,7 @@ test("includes the optional Wise support section", () => {
   assert.match(css, /\.support-card\s*\{/);
 });
 
-test("stages a detailed Lumen 1.2.1 guide for the next release", () => {
+test("publishes a detailed Lumen 1.2.1 guide", () => {
   assert.match(helpHtml, /^<!DOCTYPE html>/i);
   assert.match(helpHtml, /<html lang="en-AU">/i);
   assert.match(
@@ -737,7 +737,7 @@ test("keeps help-page references, labels and local assets intact", async () => {
   );
 });
 
-test("stages the F1 policy with only its effective date pending", async () => {
+test("publishes the F1 policy with its final effective date", async () => {
   assert.match(privacyHtml, /^<!DOCTYPE html>/i);
   assert.match(privacyHtml, /<html lang="en-AU">/i);
   assert.match(privacyHtml, /<title>Privacy Policy — Lumen for Mac<\/title>/i);
@@ -899,7 +899,7 @@ test("keeps native page behaviour and internal references intact", async () => {
   );
 });
 
-test("preserves the 1.1 artefact and stages the gated 1.2.1 release", async () => {
+test("preserves the 1.1 artefact and publishes the gated 1.2.1 release", async () => {
   const [dmg, socialCard] = await Promise.all([
     readFile(new URL("Lumen-1.1.dmg", publicRoot)),
     readFile(new URL("og.png", publicRoot)),
