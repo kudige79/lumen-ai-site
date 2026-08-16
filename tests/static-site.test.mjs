@@ -52,8 +52,6 @@ const publishedBuild = "⟦PENDING-ARTEFACT:BUILD⟧";
 const releaseDateIso = "⟦PENDING-ARTEFACT:RELEASE-DATE-ISO⟧";
 const releaseDateDisplay = "⟦PENDING-ARTEFACT:RELEASE-DATE-DISPLAY⟧";
 const policyEffectiveDate = "⟦PENDING-F1:POLICY-EFFECTIVE-DATE⟧";
-const policyRegeneration = "⟦PENDING-F1:REGENERATE-POLICY⟧";
-const policyChrome = "⟦PENDING-F1:POLICY-CHROME⟧";
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -118,8 +116,6 @@ test("keeps the staged 1.2.1 release fail-closed", async () => {
     [releaseDateIso, 1],
     [releaseDateDisplay, 1],
     [policyEffectiveDate, 1],
-    [policyRegeneration, 1],
-    [policyChrome, 2],
   ]);
 
   for (const [marker, expectedCount] of expectedMarkers) {
@@ -741,7 +737,7 @@ test("keeps help-page references, labels and local assets intact", async () => {
   );
 });
 
-test("stages the Z15 policy with an explicit F1 regeneration blocker", async () => {
+test("stages the F1 policy with only its effective date pending", async () => {
   assert.match(privacyHtml, /^<!DOCTYPE html>/i);
   assert.match(privacyHtml, /<html lang="en-AU">/i);
   assert.match(privacyHtml, /<title>Privacy Policy — Lumen for Mac<\/title>/i);
@@ -755,16 +751,36 @@ test("stages the Z15 policy with an explicit F1 regeneration blocker", async () 
   );
   assert.match(
     privacyHtml,
-    /staged privacy policy for Lumen 1\.2\.1, covering on-device processing/,
+    /<p class="guide-intro">This is the complete privacy policy included in Lumen 1\.2\.1, covering on-device processing, optional cloud AI, software updates, local storage, session recovery and diagnostic logging\.<\/p>/,
+  );
+  assert.match(
+    privacyHtml,
+    /<p class="version-note">The policy text below mirrors the policy included in Lumen 1\.2\.1\.<\/p>/,
   );
   assert.doesNotMatch(
     privacyHtml,
-    /currently in development|The current public download remains Lumen 1\.1/,
+    /currently in development|The current public download remains Lumen 1\.1|staged privacy policy|staging draft|pending F1/,
   );
   assert.doesNotMatch(privacyHtml, /Lumen 1\.2(?!\.1)/);
+  assert.doesNotMatch(
+    privacyHtml,
+    /PENDING-F1:(?:POLICY-CHROME|REGENERATE-POLICY)/,
+  );
   assert.match(
     privacyHtml,
-    new RegExp(escapeRegExp(policyRegeneration)),
+    /<a href="#no-collection">No Lumen account or tracking<\/a>/,
+  );
+  assert.match(
+    privacyHtml,
+    /<a href="#software-updates">Software updates<\/a>/,
+  );
+  assert.match(
+    privacyHtml,
+    /<h2 id="no-collection-title">No Lumen account or tracking<\/h2>\s*<p>Lumen requires no account and includes no analytics, advertising or tracking\. Its separate software-update request is described below\.<\/p>/,
+  );
+  assert.match(
+    privacyHtml,
+    /<p class="section-number">12<\/p>\s*<h2 id="software-updates-title">Software update checks<\/h2>/,
   );
   assert.match(
     privacyHtml,
@@ -808,7 +824,7 @@ test("stages the Z15 policy with an explicit F1 regeneration blocker", async () 
   assert.notEqual(article, "");
   assert.equal(
     createHash("sha256").update(normalisePolicyArticle(article)).digest("hex"),
-    "266231610c927073f8f5c33c1079b551c45bc25205d145504c36c56dd6d196b5",
+    "e027f0d300e8abdda52c9834ae0aa0ec97e7eaccf63df004c4de2b83b24b1390",
   );
   assert.equal(
     countMatches(article, /<section class="guide-section"/g),

@@ -8,7 +8,9 @@
 
 **Base:** `185a5c414742fddcee47b855c30c30c2069b2ce1` (`origin/main`)
 
-**App source inspected read-only:** `3feef47c50773cd7f9c50fc62612d89dd19740f3`
+**F1 policy source inspected read-only:**
+`b1699e8de921a5b714527e34599227236af80126` (unchanged at current app HEAD
+`d08014a38446beec715e3a6bc0a69c17b280e5cc`)
 
 **Mirror repository:** `kudige79/lumen-privacy`, staged separately on
 `release/1.2.1` from `381a059e58fe4b07218f727aeed53d610f83892e`
@@ -32,27 +34,27 @@ to the mirror's `main` is its separate deploy boundary.
 
 ## 2. Sources and sequencing
 
-- The canonical `website/` checkout has no tracked difference from pushed
-  `origin/main` at `185a5c4`. Its two pre-existing dirty entries are untracked
-  generated trees: `.wrangler/` (52 KB cache/configuration state) and `dist/`
-  (21 MB prior build output, including JavaScript and a copied legacy DMG).
-  This proposal starts from a fresh `185a5c4` tree; neither residue enters it.
+- The local `website/` checkout is the committed `release/1.2.1` branch at
+  `5b5c794`, two commits above pushed `origin/main` `185a5c4`. Its tracked tree
+  is clean. Its two pre-existing dirty entries are untracked generated trees:
+  `.wrangler/` (52 KB cache/configuration state) and `dist/` (21 MB prior build
+  output, including JavaScript and a copied legacy DMG). Neither residue enters
+  this proposal.
 - Current large-PDF behaviour and consent copy: `CloudConsentModal.swift`,
   `SettingsView.swift`, `UserGuide.swift`, `PDFExtractor.swift` and
-  `JobOrchestrator.swift` at app commit `3feef47`.
-- Updater disclosure gold copy: `SettingsView.swift:716` at `3feef47`.
-- Current legal source: `PrivacyPolicy.swift` at `3feef47`. It contains the
-  Z15 large-PDF policy dated 7 August 2026, but F1 has **not** landed: its
-  developer-receipt absolutes remain and it has no updater section.
-- Final privacy source: the post-F1 `PrivacyPolicy.markdown`, not this draft.
-  Both hosted copies must be regenerated from it and use the one effective date
-  chosen at ship.
+  `JobOrchestrator.swift` at current app HEAD `d08014a`.
+- Updater disclosure gold copy: `SettingsView.swift` as incorporated into F1.
+- Current legal source: `PrivacyPolicy.swift` at `b1699e8`, unchanged at current
+  app HEAD. F1 has landed: the policy now contains the truthful §1/§2 wording
+  and final §12 software-update disclosure. Both staged HTML bodies project
+  those exact 49 blocks.
+- The effective date remains a pending user decision. Both hosted copies keep
+  the same explicit date token until the single ship date is chosen.
 - Release artefact values and the signed appcast do not exist yet. They are
   deliberately represented by fail-closed tokens.
 
-The staged policy pages therefore contain the current Z15 clauses plus the
-Settings updater paragraph, with explicit `PENDING-F1` markers. They are review
-scaffolding, not a substitute for the final programmatic regeneration.
+The F1 body copy is now final in both staged policies. The only deliberate
+policy difference from `PrivacyPolicy.markdown` is the pending effective date.
 
 ## 3. Staged-versus-live diff
 
@@ -66,15 +68,15 @@ scaffolding, not a substitute for the final programmatic regeneration.
 | `package.json` | Adds the dependency-free `release:gate` command. |
 | `public/index.html` | Stages 1.2.1 labels and artefact tokens; corrects all current provider, cloud-summary and FAQ large-PDF claims; scopes the account/tracking statement around the separate updater path; makes session/cleanup prose version-neutral; adds two explicitly non-exhaustive 1.2.1 website-impact highlights; moves 1.2 to Previous release. The full historical 1.2 entry, including its then-true upload route, is unchanged. |
 | `public/help/index.html` | Stages all guide metadata/chrome at 1.2.1; corrects the Unprocessed, privacy and troubleshooting large-PDF text; removes the unsafe no-server absolute; adds a Software updates section using the Settings gold copy verbatim. |
-| `public/privacy/index.html` | Stages 1.2.1 chrome behind explicit F1 markers; transcribes the current Z15 §4.1(a)/(b) and §6(e) clauses; adds the updater gold copy as an unnumbered pending F1 block. Final date, numbering, chrome and article remain blocked on F1 regeneration. |
+| `public/privacy/index.html` | Projects F1's exact §1, §2 and numbered §12 into the already-audited policy body; restores final 1.2.1 chrome and contents labels; keeps only the effective-date token. |
 | `scripts/release-gate.mjs` | Lists every complete or truncated pending token as `file:line`, rejects surviving staging-only privacy phrases, and exits 1 until the expected release fields and a structurally expected Sparkle appcast agree. It checks the marketing version, canonical repository/tag/filename path, exact numeric build and byte length, Sparkle namespace and version elements, and the shape of the EdDSA enclosure-signature attribute. |
-| `tests/static-site.test.mjs` | Re-pins the current 1.2.1/F5/help/policy draft, adds exact placeholder counts and adversarial appcast fixtures, hashes the 1.2.1 highlight block, keeps the 1.2 changelog digest unchanged, preserves the 1.1 binary checks, and locks the release gate into the Pages workflow. |
+| `tests/static-site.test.mjs` | Re-pins the F1 policy digest and remaining marker counts, locks the final chrome/§2/§12 copy, retains the adversarial appcast fixtures and keeps the 1.2 changelog and 1.1 binary locks unchanged. |
 
 ### `kudige79/lumen-privacy`
 
 | File | Staged change from live 1 August copy |
 |---|---|
-| `index.html` | Preserves all HTML chrome and WEB-1's stable `https://lumen-ai.eu/` Download links; transcribes current Z15 §4.1(a)/(b) and §6(e); stages the updater gold copy; leaves F1/date markers that force final regeneration. |
+| `index.html` | Preserves all HTML chrome and WEB-1's stable `https://lumen-ai.eu/` Download links; projects F1's exact §1, §2 and numbered §12; keeps only the effective-date token. |
 | `support.html` | Removes the stale “nothing leaves”, “one-time” consent/download, permanent-folder-grant and unconditional iWork-preview claims; adds the updater disclosure and narrows intake/revert wording to supported and eligible files. |
 
 The mirror is confirmed to live in `kudige79/lumen-privacy`, not the main site
@@ -82,18 +84,18 @@ repository.
 
 ## 4. Claim-to-code audit
 
-| Changed statement and surfaces | Evidence at app `3feef47` | Boundary kept in the copy |
+| Changed statement and surfaces | Evidence at app `b1699e8` / current HEAD | Boundary kept in the copy |
 |---|---|---|
-| **Home model cards, cloud summary, FAQ; Help Unprocessed/privacy/troubleshooting; both policy drafts:** an accepted PDF above about 30 MB is reduced locally to a temporary copy of up to the first five pages. | `CloudConsentModal.swift:208-214`; `PDFExtractor.swift:42-46,220-290`; `JobOrchestrator.swift:2661-2681`. | “Up to” is a ceiling; the copy never promises five pages exist or contain enough identifying text. |
+| **Home model cards, cloud summary, FAQ; Help Unprocessed/privacy/troubleshooting; both staged policies:** an accepted PDF above about 30 MB is reduced locally to a temporary copy of up to the first five pages. | `CloudConsentModal.swift:208-214`; `PDFExtractor.swift:42-46,220-290`; `JobOrchestrator.swift:2661-2681`. | “Up to” is a ceiling; the copy never promises five pages exist or contain enough identifying text. |
 | **Home and Help:** all five analysers can use locally extracted excerpt text for an accepted oversized PDF. | `JobOrchestrator.swift:2831-2835`; `UserGuide.swift:103,169`. | Copy says the analyser *can use* the text, not that every document will be named. Ordinary confidence/Unprocessed routing still applies. |
-| **Home, Help and both policy drafts:** only a weak Claude/OpenAI document result may send native bytes; an ordinary PDF may send its original inline, an oversized PDF may send only its excerpt, and an image document may send a re-encoded copy. | `CloudConsentModal.swift:224-232`; `JobOrchestrator.swift:2857-2877`; provider `supportsNativeFiles`. | Every occurrence keeps the inline request guard. Gemini/xAI are described as document-text-only, not globally text-only, because cloud photo captions can send re-encoded images. |
+| **Home, Help and both staged policies:** only a weak Claude/OpenAI document result may send native bytes; an ordinary PDF may send its original inline, an oversized PDF may send only its excerpt, and an image document may send a re-encoded copy. | `CloudConsentModal.swift:224-232`; `JobOrchestrator.swift:2857-2877`; provider `supportsNativeFiles`. | Every occurrence keeps the inline request guard. Gemini/xAI are described as document-text-only, not globally text-only, because cloud photo captions can send re-encoded images. |
 | **Home, Help and both policies:** the whole accepted large PDF is no longer uploaded by the production route; temporary excerpts are cleaned up after the attempt and again at launch if interrupted. | `PrivacyPolicy.swift` §4.1(a)/(b); `JobOrchestrator.swift:2661-2681,2831-2877`; `DocumentRenamerApp.swift:36-44,88-126`; no production caller constructs `.filesAPIPDF`. | Historical 1.2 changelog and legacy cleanup prose remain because older builds really did upload. |
 | **Help:** files above roughly 500 MB are skipped, while the about-30-MB threshold selects the excerpt route rather than Unprocessed. | `UserGuide.swift:103,169`; the orchestrator intake-size cap and oversized-PDF routing. | The two thresholds are not conflated; “roughly” and “about” remain. |
 | **Home and Help:** “Cloud only by choice”/“no developer-operated servers” is narrowed to optional cloud **AI**, no Lumen account and no analytics/advertising/tracking, with the separate updater request called out. | `SettingsView.swift:697-719`; `Info.plist` updater defaults; `RELEASE_AUDIT_121.md` F1/F2/F5. | No general no-network/no-server guarantee survives. “No document content” remains scoped to default document analysis or the update request. |
-| **Help, home highlights, both pending policies and mirror Support:** checks are on by default, run after launch only when a daily check is due, identify Lumen/version, and expose IP/time to the server without document data or a Mac system profile. | Exact Settings gold paragraph at `SettingsView.swift:716`; `Info.plist:9-24`; `UpdateController.swift:62-100`. | The gold paragraph is verbatim. The separate lead locates the control at Settings → Advanced → Software Updates; the copy does not claim anonymity. |
-| **Help, home highlights, both pending policies and mirror Support:** available updates download from GitHub Releases; automatic checks can be disabled and a manual menu check remains; download/install stay user-chosen. | `SettingsView.swift:697-719`; `DocumentRenamerApp.swift:71-75`; `SUAutomaticallyUpdate = NO`; `SUAllowsAutomaticUpdates = NO`. | The `lumen-ai.eu` appcast host is distinguished from the GitHub asset host; no silent download/install is implied. |
-| **Both policy drafts:** the Z15 large-PDF, earlier-upload cleanup and §6(e) operational-record clauses are transcribed from the current Swift constant. | `PrivacyPolicy.swift` §4.1(a)/(b) and §6(e) at `3feef47`. | The current canonical 46 blocks pass after excluding only the three explicit updater-draft blocks and substituting the current date. F1 still blocks publication. |
-| **Both policy drafts:** the updater block, article placement, chrome and effective date are provisional. | `PrivacyPolicy.swift` still lacks F1; `RELEASE_AUDIT_121.md` F1/F4. | F1/date/chrome markers, banned staging phrases and the policy gates prevent the draft from being mistaken for canonical copy; no final section number is invented. |
+| **Help, home highlights, both staged policies and mirror Support:** checks are on by default, run after launch only when a daily check is due, identify Lumen/version, and expose IP/time to the server without document data or a Mac system profile. | Exact Settings gold paragraph incorporated by `b1699e8`; `Info.plist:9-24`; `UpdateController.swift:62-100`. | The gold paragraph is verbatim. The separate lead locates the control at Settings → Advanced → Software Updates; the copy does not claim anonymity. |
+| **Help, home highlights, both staged policies and mirror Support:** available updates download from GitHub Releases; automatic checks can be disabled and a manual menu check remains; download/install stay user-chosen. | `SettingsView.swift`; `DocumentRenamerApp.swift:71-75`; `SUAutomaticallyUpdate = NO`; `SUAllowsAutomaticUpdates = NO`. | The `lumen-ai.eu` appcast host is distinguished from the GitHub asset host; no silent download/install is implied. |
+| **Both staged policies:** the truthful §1/§2 wording, Z15 clauses, legacy-cleanup paragraph, §6(e) operational records and numbered §12 updater disclosure are transcribed from the current Swift constant. | All 49 blocks of `PrivacyPolicy.markdown` at `b1699e8`, unchanged at current HEAD. | Both local gates report `differing=0`; no F1 body or chrome marker remains. |
+| **Both staged policies:** the effective date remains provisional. | Ship-date decision is still pending; `PrivacyPolicy.swift` currently says 7 August 2026. | The one retained date token keeps both copies non-publishable until the same approved date is applied to the app and both sites. |
 | **Home changelog:** two website-impact items are labelled “Highlights in 1.2.1”, not a complete release inventory. | Z15 and UPD-1 entries in `APP_STORE_COMPLIANCE_ROADMAP.md`; this round's explicit scope. | A10, Z12, Z10, Z9, ITR, AF and other app work is not falsely represented as absent; full release notes remain a release artefact. The highlight block is copy-hashed. |
 | **Home changelog:** 1.2 becomes Previous release while its then-true Files-API history remains unchanged. | Shipped 1.2 behaviour and the existing locked 1.2 digest; Z15 landed only for 1.2.1. | Historical truth is not rewritten into current behaviour. |
 | **Mirror Support:** cloud analysis is optional/off by default and uses the user's key; consent is shown before the first file-related transmission to each provider, materially changed disclosures are shown again, and photo naming has separate consent. | `CloudConsentModal.swift`; `AppSettings` consent-version/revocation paths. | The wording leaves the user-invoked key-test probe outside file-egress consent, as the app does. “One-time” is removed; the separate default-on updater is disclosed immediately below. |
@@ -107,7 +109,7 @@ The main-site gate scans deployable/public copy, tests, workflow metadata,
 README and package metadata. It intentionally excludes this staging record,
 which documents the literal token names.
 
-### Main site: deployable HTML (19 occurrences)
+### Main site: deployable HTML (16 occurrences)
 
 1. `public/index.html:47` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧` (header).
 2. `public/index.html:66` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧` (hero).
@@ -123,49 +125,41 @@ which documents the literal token names.
 12. `public/help/index.html:65` — `⟦PENDING-ARTEFACT:BUILD⟧`.
 13. `public/help/index.html:439` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧`.
 14. `public/privacy/index.html:44` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧`.
-15. `public/privacy/index.html:54` — `⟦PENDING-F1:POLICY-CHROME⟧`.
-16. `public/privacy/index.html:60` — `⟦PENDING-F1:POLICY-EFFECTIVE-DATE⟧`.
-17. `public/privacy/index.html:62` — `⟦PENDING-F1:POLICY-CHROME⟧`.
-18. `public/privacy/index.html:184` — `⟦PENDING-F1:REGENERATE-POLICY⟧`.
-19. `public/privacy/index.html:196` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧`.
+15. `public/privacy/index.html:60` — `⟦PENDING-F1:POLICY-EFFECTIVE-DATE⟧`.
+16. `public/privacy/index.html:197` — `⟦PENDING-ARTEFACT:RELEASE-URL⟧`.
 
 ### Main site: release-gate expectations (3 occurrences)
 
-20. `scripts/release-gate.mjs:14` — expected appcast build.
-21. `scripts/release-gate.mjs:15` — exact appcast byte size.
-22. `scripts/release-gate.mjs:16` — canonical release URL.
+17. `scripts/release-gate.mjs:14` — expected appcast build.
+18. `scripts/release-gate.mjs:15` — exact appcast byte size.
+19. `scripts/release-gate.mjs:16` — canonical release URL.
 
-### Main site: test constants (10 occurrences)
+### Main site: test constants (8 occurrences)
 
-23. `tests/static-site.test.mjs:44` — release URL.
-24. `tests/static-site.test.mjs:46` — SHA-256.
-25. `tests/static-site.test.mjs:47` — display file size.
-26. `tests/static-site.test.mjs:48` — exact byte size.
-27. `tests/static-site.test.mjs:49` — build.
-28. `tests/static-site.test.mjs:50` — ISO release date.
-29. `tests/static-site.test.mjs:51` — display release date.
-30. `tests/static-site.test.mjs:52` — policy effective date.
-31. `tests/static-site.test.mjs:53` — policy regeneration.
-32. `tests/static-site.test.mjs:54` — policy chrome.
+20. `tests/static-site.test.mjs:46` — release URL.
+21. `tests/static-site.test.mjs:48` — SHA-256.
+22. `tests/static-site.test.mjs:49` — display file size.
+23. `tests/static-site.test.mjs:50` — exact byte size.
+24. `tests/static-site.test.mjs:51` — build.
+25. `tests/static-site.test.mjs:52` — ISO release date.
+26. `tests/static-site.test.mjs:53` — display release date.
+27. `tests/static-site.test.mjs:54` — policy effective date.
 
 In addition, `public/updates/appcast.xml` is deliberately absent and is an
-independent release-gate failure. The gate separately rejects three provisional
-privacy phrases at `public/privacy/index.html:54,62,83`, so merely deleting the
-markers cannot make review-only chrome deployable. Its release-expectation
-checks also remain red while build, byte size and URL carry tokens.
+independent release-gate failure. The permanent provisional-copy defence remains,
+but finds zero staging-only privacy phrases after F1. Release-expectation checks
+also remain red while build, byte size and URL carry artefact tokens.
 
-### Separate policy mirror (2 occurrences)
+### Separate policy mirror (1 occurrence)
 
-33. `kudige79/lumen-privacy:index.html:534` —
+28. `kudige79/lumen-privacy:index.html:534` —
     `⟦PENDING-F1:POLICY-EFFECTIVE-DATE⟧`.
-34. `kudige79/lumen-privacy:index.html:603` —
-    `⟦PENDING-F1:REGENERATE-POLICY⟧`.
 
 The mirror's legacy Pages service deploys directly from its `main` branch and
 has no enforceable pre-upload hook. Its release branch therefore remains
-local/unpushed until F1 regeneration; the mirror `main` push is permitted only
-after the local word-identity gate exits 0 and the final delta has both
-greenlights.
+local/unpushed until the effective date is resolved; the mirror `main` push is
+permitted only after the local word-identity gate exits 0 and the final delta
+has both greenlights.
 
 ## 6. `/updates/` decision
 
@@ -183,9 +177,9 @@ The shorthand “merge, then fill placeholders” cannot be literal here: a main
 merge is the deployment boundary. The safe order is:
 
 1. Obtain Codex and Claude greenlights on this staged branch.
-2. Land app F1. Regenerate **both** policy HTML files programmatically from its
-   final `PrivacyPolicy.markdown`; choose and apply the single ship effective
-   date; update the policy digest lock.
+2. F1 is landed and both local policy bodies are aligned. Choose and apply the
+   single ship effective date to `PrivacyPolicy.swift` and both HTML copies,
+   then require both local policy gates to exit 0.
 3. Build/sign/notarise 1.2.1 and publish the GitHub Release asset first.
 4. Fill the release URL, display size, exact byte size, build, SHA-256 and date
    tokens from that exact public artefact; re-pin the matching test constants
@@ -210,20 +204,17 @@ merge is the deployment boundary. The safe order is:
 - Staged `npm test`: 16/16 passed, including the exact HTML-file set,
   zero-JavaScript locks, both changelog digests, and adversarial appcast
   validator cases.
-- Staged `npm run release:gate`: **expected exit 1**, enumerating 32 main-site
-  markers, three staging-only privacy phrases, three unresolved release
+- Staged `npm run release:gate`: **expected exit 1**, enumerating 27 main-site
+  markers, zero staging-only privacy phrases, three unresolved release
   expectations and the missing appcast. This is the intended deploy block.
-- Both staged policy gates: **expected exit 1** with the pending effective date
-  and exactly the three appended updater blocks (heading, default/control
-  paragraph and Settings gold paragraph) as the only prose divergence.
-  After removing only that pending updater block and restoring the current
-  7 August date in temporary verification copies, both local gates passed:
-  `blocks: swift=46 html=46 differing=0 date=ok title=ok`. This proves the
-  underlying Z15 transcription; the publish gate still cannot pass until the
-  post-F1 regeneration replaces the draft.
+- Both staged policy gates: **expected exit 1** solely for the pending effective
+  date. Each reports `blocks: swift=49 html=49 differing=0 date=DRIFT title=ok`.
+  The body is word-identical; publication remains blocked until the one ship
+  date is applied everywhere.
 - Codex adversarial copy review: **passed** after three independent scope, copy
   and release-gate attacks; all concrete findings were corrected and re-checked.
-- Claude word-by-word greenlight: pending.
+- Claude's word-by-word greenlight covers the committed staging base. The F1
+  clearance delta remains pending review and approval before local application.
 
 ## 9. Deliberately untouched
 
@@ -236,8 +227,10 @@ merge is the deployment boundary. The safe order is:
 - `public/og.png`, icons, CSS, sitemap, robots file and 404 page.
 - `public/updates/`: no unsigned or speculative appcast is staged.
 - Mirror HTML chrome, including WEB-1's stable landing-page Download links;
-  only the policy body/date scaffold and the now-audited Support copy change.
-- Neither canonical repository nor either deploying `main` branch: all draft
-  bytes remain in disposable review clones until explicit approval.
+  only the F1 policy-body sync and the already-audited Support copy change, while
+  the effective-date marker remains.
+- The staged base is committed locally on both `release/1.2.1` branches. This F1
+  clearance delta remains only in disposable review clones until explicit
+  approval; no remote branch or deploying `main` branch has moved.
 - The canonical site's untracked `.wrangler/` and `dist/` trees: both remain
   untouched and excluded from the proposal.
