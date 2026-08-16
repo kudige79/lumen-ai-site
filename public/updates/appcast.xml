@@ -3,12 +3,12 @@
     <channel>
         <title>Lumen</title>
         <item>
-            <title>1.2.2</title>
-            <pubDate>Sun, 16 Aug 2026 16:09:42 +0400</pubDate>
-            <sparkle:version>6</sparkle:version>
-            <sparkle:shortVersionString>1.2.2</sparkle:shortVersionString>
+            <title>1.2.3</title>
+            <pubDate>Sun, 16 Aug 2026 22:55:48 +0400</pubDate>
+            <sparkle:version>7</sparkle:version>
+            <sparkle:shortVersionString>1.2.3</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>26.4</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/kudige79/lumen-ai-site/releases/download/v1.2.2/Lumen-1.2.2.dmg" length="21621653" type="application/octet-stream" sparkle:edSignature="/sSdtshGCR/e/jriK3jLwN6RAmcHvOdoo6g5Tsr+nUx8UWr2G162SBS5cpPgNYoXguwy0Smg9Z4QcyKREzhXDQ=="/>
+            <enclosure url="https://github.com/kudige79/lumen-ai-site/releases/download/v1.2.3/Lumen-1.2.3.dmg" length="21691117" type="application/octet-stream" sparkle:edSignature="X/XiEwH2IVPJWpDFFMLb98W2YyLVQkJsJd1YDe4PK8qVu3W27OCJ7A0/RRlv8PhpCuVHJvWfkiu+x9DIU29nBg=="/>
         </item>
     </channel>
 </rss>
