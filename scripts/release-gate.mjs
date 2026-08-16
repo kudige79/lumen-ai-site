@@ -10,12 +10,12 @@ const provisionalPattern = /\b(?:pending F1|staged privacy policy|staging draft)
 const scanRoots = [".github", "public", "scripts", "tests"];
 const scannedFiles = ["README.md", "package.json"];
 const expectedAppcast = {
-  version: "1.2.2",
-  build: "6",
-  byteSize: "21621653",
-  assetUrl: "https://github.com/kudige79/lumen-ai-site/releases/download/v1.2.2/Lumen-1.2.2.dmg",
+  version: "1.2.3",
+  build: "7",
+  byteSize: "21691117",
+  assetUrl: "https://github.com/kudige79/lumen-ai-site/releases/download/v1.2.3/Lumen-1.2.3.dmg",
 };
-export const lastShippedBuild = "4";
+export const lastShippedBuild = "6";
 const textExtensions = new Set([
   ".css", ".html", ".json", ".md", ".mjs", ".txt", ".xml", ".yaml", ".yml",
 ]);
@@ -56,8 +56,8 @@ export function validateReleaseBuild(build) {
 
 export function validateReleaseExpectation(expected) {
   const failures = [];
-  const canonicalAsset = /^https:\/\/github\.com\/kudige79\/lumen-ai-site\/releases\/download\/v1\.2\.2\/Lumen-1\.2\.2\.dmg$/;
-  if (expected.version !== "1.2.2") {
+  const canonicalAsset = /^https:\/\/github\.com\/kudige79\/lumen-ai-site\/releases\/download\/v1\.2\.3\/Lumen-1\.2\.3\.dmg$/;
+  if (expected.version !== "1.2.3") {
     failures.push("release expectation: wrong marketing version");
   }
   if (!canonicalAsset.test(expected.assetUrl)) {

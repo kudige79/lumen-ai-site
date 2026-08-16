@@ -45,17 +45,17 @@ const [
 
 const packageJson = JSON.parse(packageText);
 const releaseAssetUrl =
-  "https://github.com/kudige79/lumen-ai-site/releases/download/v1.2.2/Lumen-1.2.2.dmg";
+  "https://github.com/kudige79/lumen-ai-site/releases/download/v1.2.3/Lumen-1.2.3.dmg";
 const publishedChecksum =
-  "2e0e225e9fc3b4f8875db099188a22b855a287e07c553f2c20b8b3d24d0efc70";
-const publishedSize = "20.6 MB";
-const publishedByteSize = "21621653";
-const publishedBuild = "6";
-const releaseDateIso = "2026-08-16";
-const releaseDateDisplay = "16 August 2026";
+  "b28ae077891ab8ee24479d5b4adf024d4d35fcb263f409c019e290ef0555de76";
+const publishedSize = "20.7 MB";
+const publishedByteSize = "21691117";
+const publishedBuild = "7";
+const releaseDateIso = "2026-08-17";
+const releaseDateDisplay = "17 August 2026";
 const policyEffectiveDate = "17 August 2026";
 const publishedAppcastChecksum =
-  "6f52ff78fb3697cda45a8faa6589900f144060f7107b6646c50de4aa2c0b4878";
+  "44bb6d8e343eabb2b22a666325206859dcf04ed4b451eac64f311617430e4bdd";
 const pendingMarkerPrefix = `${String.fromCodePoint(0x27e6)}PENDING-`;
 
 function escapeRegExp(value) {
@@ -111,7 +111,7 @@ test("publishes a complete zero-JavaScript landing page", async () => {
   );
 });
 
-test("publishes a fully resolved Lumen 1.2.2 release", () => {
+test("publishes a fully resolved Lumen 1.2.3 release", () => {
   const publishedHtml = [html, helpHtml, privacyHtml].join("\n");
   assert.equal(publishedHtml.includes(pendingMarkerPrefix), false);
   assert.doesNotMatch(publishedHtml, /releases\/download\/v1\.2\/Lumen-1\.2\.dmg/);
@@ -121,7 +121,7 @@ test("publishes a fully resolved Lumen 1.2.2 release", () => {
   );
   assert.deepEqual(
     validateAppcast(appcastBytes.toString("utf8"), {
-      version: "1.2.2",
+      version: "1.2.3",
       build: publishedBuild,
       byteSize: publishedByteSize,
       assetUrl: releaseAssetUrl,
@@ -258,20 +258,20 @@ test("publishes crawler discovery files for the canonical URL", () => {
   assert.match(sitemapText, /<\/urlset>\s*$/);
 });
 
-test("publishes the approved Lumen 1.2.2 product and model facts", () => {
+test("publishes the approved Lumen 1.2.3 product and model facts", () => {
   assert.match(html, /Turn messy files into meaningful names\./);
   assert.match(
     html,
     /Lumen is a free, local-first AI file renamer for Mac that proposes clean, consistent filenames for supported documents and opted-in photos\./,
   );
-  assert.match(html, /Download Lumen 1\.2\.2/);
+  assert.match(html, /Download Lumen 1\.2\.3/);
   assert.match(html, new RegExp(`Download the ${escapeRegExp(publishedSize)} DMG`));
-  assert.match(html, new RegExp(`Lumen 1\\.2\\.2 · Build ${escapeRegExp(publishedBuild)}`));
+  assert.match(html, new RegExp(`Lumen 1\\.2\\.3 · Build ${escapeRegExp(publishedBuild)}`));
   assert.match(
     html,
     new RegExp(`${escapeRegExp(publishedSize)} <span aria-hidden="true">·<\\/span> macOS 26\\.4 or later<span aria-hidden="true">·<\\/span> Universal app`),
   );
-  assert.match(html, /<span>1<\/span> Open Lumen-1\.2\.2\.dmg\./);
+  assert.match(html, /<span>1<\/span> Open Lumen-1\.2\.3\.dmg\./);
   assert.match(html, /macOS 26\.4 or later/);
   assert.match(html, /Apple silicon with 24 GB\+ memory/);
   assert.match(html, /One local model\. Five optional cloud models\./);
@@ -304,12 +304,12 @@ test("publishes the approved Lumen 1.2.2 product and model facts", () => {
   assert.match(html, /not through the Mac App Store/);
   assert.match(
     html,
-    /Lumen 1\.2\.2 is the current release, distributed directly as a signed and notarised Developer-ID disk image through GitHub Releases, not through the Mac App Store\./,
+    /Lumen 1\.2\.3 is the current release, distributed directly as a signed and notarised Developer-ID disk image through GitHub Releases, not through the Mac App Store\./,
   );
-  assert.match(html, /Lumen 1\.2\.2 features/);
+  assert.match(html, /Lumen 1\.2\.3 features/);
   assert.match(
     html,
-    /These features are included in the current Lumen 1\.2\.2 release\./,
+    /These features are included in the current Lumen 1\.2\.3 release\./,
   );
   assert.match(
     html,
@@ -398,6 +398,26 @@ test("preserves the labelled product sections and shipped changelog", () => {
   assert.match(html, /Clearer duplicate selections\./);
   assert.match(html, /Organisation mappings in filenames\./);
   assert.match(html, /Website link in About\./);
+  assert.match(html, /Ollama Cloud, a fifth cloud provider\./);
+  assert.match(html, /Providers listed by cost\./);
+  assert.match(html, /Step-by-step provider setup in Help\./);
+  assert.match(html, /Cleaner Name Review\./);
+
+  const release123Article =
+    html.match(
+      /<article class="release-entry" aria-labelledby="release-1-2-3-title"[\s\S]*?<\/article>/i,
+    )?.[0] ?? "";
+  const release123Copy =
+    release123Article.match(
+      /<div class="release-groups">([\s\S]*?)<\/div>/i,
+    )?.[1] ?? "";
+  assert.notEqual(release123Copy, "");
+  assert.equal(
+    createHash("sha256")
+      .update(normalisePolicyArticle(release123Copy.replace(/h4/g, "h3")))
+      .digest("hex"),
+    "e609b291811591a50316eb19461922b4a4c2833d1b842d1171fbe3195cd8e94b",
+  );
 
   const release122Article =
     html.match(
@@ -449,12 +469,14 @@ test("preserves the labelled product sections and shipped changelog", () => {
     "318ae61c2e238b044e0ed08c98e16e35f67d42745115d3cd5b253a3f195ed2ae",
   );
 
+  const version123Index = html.indexOf('id="release-1-2-3-title"');
   const version122Index = html.indexOf('id="release-1-2-2-title"');
   const version121Index = html.indexOf('id="release-1-2-1-title"');
   const version12Index = html.indexOf('id="release-1-2-title"');
   const version11Index = html.indexOf('id="release-1-1-title"');
   const version10Index = html.indexOf('id="release-1-0-title"');
-  assert.ok(version122Index >= 0 && version121Index >= 0 && version12Index >= 0 && version11Index >= 0 && version10Index >= 0);
+  assert.ok(version123Index >= 0 && version122Index >= 0 && version121Index >= 0 && version12Index >= 0 && version11Index >= 0 && version10Index >= 0);
+  assert.ok(version123Index < version122Index);
   assert.ok(version122Index < version121Index);
   assert.ok(version121Index < version12Index);
   assert.ok(version12Index < version11Index);
@@ -585,12 +607,12 @@ test("includes the optional Wise support section", () => {
   assert.match(css, /\.support-card\s*\{/);
 });
 
-test("publishes a detailed Lumen 1.2.2 guide", () => {
+test("publishes a detailed Lumen 1.2.3 guide", () => {
   assert.match(helpHtml, /^<!DOCTYPE html>/i);
   assert.match(helpHtml, /<html lang="en-AU">/i);
   assert.match(
     helpHtml,
-    /<title>Lumen 1\.2\.2 User Guide — Help for the Mac file renamer<\/title>/i,
+    /<title>Lumen 1\.2\.3 User Guide — Help for the Mac file renamer<\/title>/i,
   );
   assert.match(
     helpHtml,
@@ -598,22 +620,22 @@ test("publishes a detailed Lumen 1.2.2 guide", () => {
   );
   assert.match(
     helpHtml,
-    /<meta name="description" content="Read the Lumen 1\.2\.2 User Guide: software updates, names backup, session recovery, safe undo, photo naming, cloud AI and troubleshooting\."\s*\/?>/i,
+    /<meta name="description" content="Read the Lumen 1\.2\.3 User Guide: software updates, names backup, session recovery, safe undo, photo naming, cloud AI and troubleshooting\."\s*\/?>/i,
   );
   assert.match(helpHtml, /<meta name="robots" content="index, follow"\s*\/?>/i);
-  assert.match(helpHtml, /<meta property="og:title" content="Lumen 1\.2\.2 User Guide"\s*\/?>/i);
+  assert.match(helpHtml, /<meta property="og:title" content="Lumen 1\.2\.3 User Guide"\s*\/?>/i);
   assert.match(helpHtml, /<meta property="og:url" content="https:\/\/lumen-ai\.eu\/help\/"\s*\/?>/i);
-  assert.match(helpHtml, /<meta name="twitter:title" content="Lumen 1\.2\.2 User Guide"\s*\/?>/i);
+  assert.match(helpHtml, /<meta name="twitter:title" content="Lumen 1\.2\.3 User Guide"\s*\/?>/i);
   assert.match(helpHtml, /<meta property="og:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
   assert.match(helpHtml, /<meta name="twitter:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
-  assert.match(helpHtml, new RegExp(`Lumen 1\\.2\\.2 · Build ${escapeRegExp(publishedBuild)}`));
+  assert.match(helpHtml, new RegExp(`Lumen 1\\.2\\.3 · Build ${escapeRegExp(publishedBuild)}`));
   assert.match(helpHtml, new RegExp(escapeRegExp(releaseAssetUrl)));
-  assert.match(helpHtml, /Download 1\.2\.2/);
+  assert.match(helpHtml, /Download 1\.2\.3/);
   assert.doesNotMatch(
     helpHtml,
     /User Guide Preview|in development|not yet released|current public download remains Lumen 1\.1|before its DMG is published/i,
   );
-  assert.doesNotMatch(helpHtml, /Lumen 1\.2(?!\.[12])/);
+  assert.doesNotMatch(helpHtml, /Lumen 1\.2(?!\.[123])/);
   assert.match(
     helpHtml,
     /together with up to 300 of your saved name mappings/,
@@ -777,17 +799,17 @@ test("publishes the F1 policy with its final effective date", async () => {
   );
   assert.match(
     privacyHtml,
-    /<p class="guide-intro">This is the complete privacy policy included in Lumen 1\.2\.2, covering on-device processing, optional cloud AI, software updates, local storage, session recovery and diagnostic logging\.<\/p>/,
+    /<p class="guide-intro">This is the complete privacy policy included in Lumen 1\.2\.3, covering on-device processing, optional cloud AI, software updates, local storage, session recovery and diagnostic logging\.<\/p>/,
   );
   assert.match(
     privacyHtml,
-    /<p class="version-note">The policy text below mirrors the policy included in Lumen 1\.2\.2\.<\/p>/,
+    /<p class="version-note">The policy text below mirrors the policy included in Lumen 1\.2\.3\.<\/p>/,
   );
   assert.doesNotMatch(
     privacyHtml,
     /currently in development|The current public download remains Lumen 1\.1|staged privacy policy|staging draft|pending F1/,
   );
-  assert.doesNotMatch(privacyHtml, /Lumen 1\.2(?!\.[12])/);
+  assert.doesNotMatch(privacyHtml, /Lumen 1\.2(?!\.[123])/);
   assert.doesNotMatch(
     privacyHtml,
     /PENDING-F1:(?:POLICY-CHROME|REGENERATE-POLICY)/,
@@ -925,7 +947,7 @@ test("keeps native page behaviour and internal references intact", async () => {
   );
 });
 
-test("preserves the 1.1 artefact and publishes the gated 1.2.2 release", async () => {
+test("preserves the 1.1 artefact and publishes the gated 1.2.3 release", async () => {
   const [dmg, socialCard] = await Promise.all([
     readFile(new URL("Lumen-1.1.dmg", publicRoot)),
     readFile(new URL("og.png", publicRoot)),
@@ -972,7 +994,7 @@ test("preserves the 1.1 artefact and publishes the gated 1.2.2 release", async (
   for (const page of [html, helpHtml, privacyHtml]) {
     assert.match(
       page,
-      new RegExp(`<a class="button button-small" href="${escapeRegExp(releaseAssetUrl)}" download>Download 1\\.2\\.2<\\/a>`),
+      new RegExp(`<a class="button button-small" href="${escapeRegExp(releaseAssetUrl)}" download>Download 1\\.2\\.3<\\/a>`),
     );
   }
 
@@ -1051,30 +1073,30 @@ test("uses one dependency-free GitHub Pages deployment path", async () => {
   );
 
   const signature = `${"A".repeat(86)}==`;
-  const canonicalAsset = "https://example.invalid/Lumen-1.2.2.dmg";
+  const canonicalAsset = "https://example.invalid/Lumen-1.2.3.dmg";
   const syntheticRelease = {
-    version: "1.2.2",
-    build: "6",
+    version: "1.2.3",
+    build: "7",
     byteSize: "1",
     assetUrl: canonicalAsset,
   };
   const canonicalRelease = {
-    version: "1.2.2",
-    build: "6",
+    version: "1.2.3",
+    build: "7",
     byteSize: "1",
     assetUrl: [
       "https://github.com/kudige79/lumen-ai-site/releases/download",
-      "v1.2.2",
-      "Lumen-1.2.2.dmg",
+      "v1.2.3",
+      "Lumen-1.2.3.dmg",
     ].join("/"),
   };
   assert.deepEqual(validateReleaseExpectation(canonicalRelease), []);
-  assert.equal(lastShippedBuild, "4");
-  assert.deepEqual(validateReleaseBuild("6"), []);
+  assert.equal(lastShippedBuild, "6");
+  assert.deepEqual(validateReleaseBuild("7"), []);
   assert.deepEqual(validateReleaseBuild("9".repeat(32)), []);
   assert.match(
-    validateReleaseBuild("4").join("\n"),
-    /greater than shipped build 4/,
+    validateReleaseBuild("6").join("\n"),
+    /greater than shipped build 6/,
   );
   for (const nonStringBuild of [6, 6n, new String("6"), Symbol("6")]) {
     assert.match(
@@ -1085,7 +1107,7 @@ test("uses one dependency-free GitHub Pages deployment path", async () => {
   assert.match(
     validateReleaseExpectation({
       ...canonicalRelease,
-      assetUrl: "https://example.invalid/Lumen-1.2.2.dmg",
+      assetUrl: "https://example.invalid/Lumen-1.2.3.dmg",
     }).join("\n"),
     /wrong canonical GitHub Release asset URL/,
   );
@@ -1113,9 +1135,9 @@ test("uses one dependency-free GitHub Pages deployment path", async () => {
   assert.match(
     validateReleaseExpectation({
       ...canonicalRelease,
-      build: "4",
+      build: "6",
     }).join("\n"),
-    /build must be greater than shipped build 4/,
+    /build must be greater than shipped build 6/,
   );
   assert.match(
     validateReleaseExpectation({
@@ -1127,23 +1149,23 @@ test("uses one dependency-free GitHub Pages deployment path", async () => {
   // Synthetic validator fixture only; these numbers are not release metadata.
   const validAppcast = `<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
-  <channel><item><sparkle:version>6</sparkle:version><sparkle:shortVersionString>1.2.2</sparkle:shortVersionString><enclosure url="${canonicalAsset}" length="1" sparkle:edSignature="${signature}" /></item></channel>
+  <channel><item><sparkle:version>7</sparkle:version><sparkle:shortVersionString>1.2.3</sparkle:shortVersionString><enclosure url="${canonicalAsset}" length="1" sparkle:edSignature="${signature}" /></item></channel>
 </rss>`;
   assert.deepEqual(validateAppcast(validAppcast, syntheticRelease), []);
   assert.match(
     validateAppcast(
       validAppcast.replaceAll(
+        "<sparkle:version>7</sparkle:version>",
         "<sparkle:version>6</sparkle:version>",
-        "<sparkle:version>4</sparkle:version>",
       ),
-      { ...syntheticRelease, build: "4" },
+      { ...syntheticRelease, build: "6" },
     ).join("\n"),
-    /build must be greater than shipped build 4/,
+    /build must be greater than shipped build 6/,
   );
   assert.match(
     validateAppcast(
       validAppcast.replace(
-        "<sparkle:version>6</sparkle:version>",
+        "<sparkle:version>7</sparkle:version>",
         "<sparkle:version>4</sparkle:version>",
       ),
       syntheticRelease,
@@ -1170,7 +1192,7 @@ test("uses one dependency-free GitHub Pages deployment path", async () => {
   assert.match(
     validateAppcast(validAppcast.replace(
       `url="${canonicalAsset}"`,
-      `evilurl="${canonicalAsset}" url="https://example.com/Lumen-1.2.2.dmg"`,
+      `evilurl="${canonicalAsset}" url="https://example.com/Lumen-1.2.3.dmg"`,
     ), syntheticRelease).join("\n"),
     /wrong GitHub Release asset URL/,
   );
