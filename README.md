@@ -29,10 +29,11 @@ the product copy, metadata, internal links, native disclosures, social card,
 download size and checksum.
 
 The landing page lives at `public/index.html`. The detailed Lumen 1.2.3 guide
-lives at `public/help/index.html`; at ship, every current download link must
-point to the Lumen 1.2.3 GitHub Release asset. The full in-site Privacy Policy lives at
-`public/privacy/index.html` and mirrors the policy compiled into the app. Keep
-each page's release copy aligned with the downloadable DMG.
+lives at `public/help/index.html`; at ship, every player-facing download link
+must point to the versioned installer under `public/downloads/`. The full
+in-site Privacy Policy lives at `public/privacy/index.html` and mirrors the
+policy compiled into the app. Keep each page's release copy aligned with the
+downloadable DMG.
 
 ## Deployment
 
@@ -49,6 +50,7 @@ dispatch the Pages workflow from a staging branch.
 ## Release assets
 
 - `public/Lumen-1.1.dmg` is the signed and notarised release artefact.
+- `public/downloads/Lumen-1.2.3.dmg` is the current player-facing installer.
 - `public/lumen-icon.png` and `public/favicon.png` are web exports of the
   shipped app icon.
 - `public/og.png` is the 1200 × 630 social-preview card.
@@ -58,10 +60,17 @@ The app version, minimum macOS version, download size, local-model requirements
 and privacy wording are intentionally explicit in `public/index.html`. Update
 them together when a new Lumen release is published.
 
-Lumen 1.1 remains bundled here so its existing download URL stays stable. From
-Lumen 1.2 onward, publish versioned installers through GitHub Releases and point
-the website download links at the matching release asset, avoiding further
-binary growth in this repository’s history.
+Lumen 1.1 remains bundled here so its existing download URL stays stable. Keep
+each current versioned installer under `public/downloads/` so lumen-ai.eu is the
+only player-facing download surface.
+
+The public GitHub Release enclosure in `public/updates/appcast.xml` is a
+load-bearing compatibility endpoint for installed Lumen 1.2.x builds. Those
+builds accept updates only from that exact route. Do not privatise this website
+repository, delete its updater assets, or rewrite the appcast enclosure to the
+website until a separately tested migration release has changed that client
+allowlist. The GitHub endpoint is for automatic updates only and is never linked
+from the rendered website.
 
 ## Release gate
 
@@ -76,8 +85,9 @@ uploads `public/`.
 For each release:
 
 1. Obtain both review greenlights on the non-deploying release branch.
-2. Build, sign and notarise the DMG, publish its GitHub Release asset, and verify
-   the asset's byte count and SHA-256 locally and after download.
+2. Build, sign and notarise the DMG. Publish the versioned website copy and the
+   compatibility GitHub Release asset, then verify both copies have the same
+   byte count and SHA-256.
 3. Replace every pending artefact value with that release's URL, display size,
    exact byte size, build, checksum and date. Re-pin the release gate's
    expected marketing version and canonical GitHub Release path for the new

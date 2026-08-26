@@ -44,8 +44,9 @@ const [
 ]);
 
 const packageJson = JSON.parse(packageText);
-const releaseAssetUrl =
+const updaterAssetUrl =
   "https://github.com/kudige79/lumen-ai-site/releases/download/v1.2.3/Lumen-1.2.3.dmg";
+const officialDownloadUrl = "/downloads/Lumen-1.2.3.dmg";
 const publishedChecksum =
   "b28ae077891ab8ee24479d5b4adf024d4d35fcb263f409c019e290ef0555de76";
 const publishedSize = "20.7 MB";
@@ -124,7 +125,7 @@ test("publishes a fully resolved Lumen 1.2.3 release", () => {
       version: "1.2.3",
       build: publishedBuild,
       byteSize: publishedByteSize,
-      assetUrl: releaseAssetUrl,
+      assetUrl: updaterAssetUrl,
     }),
     [],
   );
@@ -304,7 +305,7 @@ test("publishes the approved Lumen 1.2.3 product and model facts", () => {
   assert.match(html, /not through the Mac App Store/);
   assert.match(
     html,
-    /Lumen 1\.2\.3 is the current release, distributed directly as a signed and notarised Developer-ID disk image through GitHub Releases, not through the Mac App Store\./,
+    /Lumen 1\.2\.3 is the current release, distributed directly from the official Lumen website as a signed and notarised Developer-ID disk image, not through the Mac App Store\./,
   );
   assert.match(html, /Lumen 1\.2\.3 features/);
   assert.match(
@@ -629,7 +630,7 @@ test("publishes a detailed Lumen 1.2.3 guide", () => {
   assert.match(helpHtml, /<meta property="og:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
   assert.match(helpHtml, /<meta name="twitter:image" content="https:\/\/lumen-ai\.eu\/og\.png"\s*\/?>/i);
   assert.match(helpHtml, new RegExp(`Lumen 1\\.2\\.3 · Build ${escapeRegExp(publishedBuild)}`));
-  assert.match(helpHtml, new RegExp(escapeRegExp(releaseAssetUrl)));
+  assert.match(helpHtml, new RegExp(escapeRegExp(officialDownloadUrl)));
   assert.match(helpHtml, /Download 1\.2\.3/);
   assert.doesNotMatch(
     helpHtml,
@@ -948,21 +949,30 @@ test("keeps native page behaviour and internal references intact", async () => {
 });
 
 test("preserves the 1.1 artefact and publishes the gated 1.2.3 release", async () => {
-  const [dmg, socialCard] = await Promise.all([
+  const [legacyDmg, currentDmg, socialCard] = await Promise.all([
     readFile(new URL("Lumen-1.1.dmg", publicRoot)),
+    readFile(new URL("downloads/Lumen-1.2.3.dmg", publicRoot)),
     readFile(new URL("og.png", publicRoot)),
   ]);
 
-  assert.equal(dmg.byteLength, 19_913_800);
+  assert.equal(legacyDmg.byteLength, 19_913_800);
   const legacyChecksum =
     "6aa7156364b1a6d99965e744b81e68ef6ca347788ee459bd51e23d6498aecb43";
-  assert.equal(createHash("sha256").update(dmg).digest("hex"), legacyChecksum);
+  assert.equal(
+    createHash("sha256").update(legacyDmg).digest("hex"),
+    legacyChecksum,
+  );
+  assert.equal(currentDmg.byteLength, Number(publishedByteSize));
+  assert.equal(
+    createHash("sha256").update(currentDmg).digest("hex"),
+    publishedChecksum,
+  );
   assert.match(html, new RegExp(escapeRegExp(publishedChecksum)));
   assert.doesNotMatch(html, new RegExp(legacyChecksum));
 
   const downloadLinks = [
     ...html.matchAll(
-      new RegExp(`<a\\b[^>]*href="${escapeRegExp(releaseAssetUrl)}"[^>]*\\bdownload(?:>|="")`, "g"),
+      new RegExp(`<a\\b[^>]*href="${escapeRegExp(officialDownloadUrl)}"[^>]*\\bdownload(?:>|="")`, "g"),
     ),
   ];
   assert.equal(downloadLinks.length, 4);
@@ -975,10 +985,11 @@ test("preserves the 1.1 artefact and publishes the gated 1.2.3 release", async (
   assert.equal(
     countMatches(
       allSiteHtml,
-      new RegExp(`href="${escapeRegExp(releaseAssetUrl)}"[^>]*\\bdownload(?:>|="")`, "g"),
+      new RegExp(`href="${escapeRegExp(officialDownloadUrl)}"[^>]*\\bdownload(?:>|="")`, "g"),
     ),
     8,
   );
+  assert.doesNotMatch(allSiteHtml, /href="https:\/\/github\.com\/kudige79\/lumen-ai-site\//i);
   const allDownloadAnchors = [
     ...allSiteHtml.matchAll(
       /<a\b[^>]*\bdownload(?:\s*=\s*"")?[^>]*>[\s\S]*?<\/a>/g,
@@ -988,13 +999,13 @@ test("preserves the 1.1 artefact and publishes the gated 1.2.3 release", async (
   for (const anchor of allDownloadAnchors) {
     assert.match(
       anchor[0],
-      new RegExp(`href="${escapeRegExp(releaseAssetUrl)}"`),
+      new RegExp(`href="${escapeRegExp(officialDownloadUrl)}"`),
     );
   }
   for (const page of [html, helpHtml, privacyHtml]) {
     assert.match(
       page,
-      new RegExp(`<a class="button button-small" href="${escapeRegExp(releaseAssetUrl)}" download>Download 1\\.2\\.3<\\/a>`),
+      new RegExp(`<a class="button button-small" href="${escapeRegExp(officialDownloadUrl)}" download>Download 1\\.2\\.3<\\/a>`),
     );
   }
 
@@ -1056,7 +1067,7 @@ test("uses one dependency-free GitHub Pages deployment path", async () => {
   assert.match(releaseGate, /sparkle:edSignature/);
   assert.match(
     releaseGate,
-    new RegExp(`assetUrl: "${escapeRegExp(releaseAssetUrl)}"`),
+    new RegExp(`assetUrl: "${escapeRegExp(updaterAssetUrl)}"`),
   );
   assert.match(
     releaseGate,
